@@ -230,4 +230,4 @@
 
 
 ##set number of runs
-/run/beamOn 10000000
+/run/beamOn 10
