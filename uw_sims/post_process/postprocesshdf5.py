@@ -20,7 +20,7 @@ def process_with_dead_layer():
 
     if(len(sys.argv) != 2):
         print('Usage: postprocesshdf5.py [filename.hdf5]')
-        sys.exit()    
+        sys.exit()
 
     start = time.time()
     print('In Progress...')
@@ -28,7 +28,7 @@ def process_with_dead_layer():
     pd.options.mode.chained_assignment = None
 
     # the following four functions define the dead layer (outer edge) and the passivated surface.
-    # these functions are never called because numba doesn't work with previously defined functions ... 
+    # these functions are never called because numba doesn't work with previously defined functions ...
     # but in the numba for loop they are used in the order they are defined here
     def expo_DL(r, a, b, sigma):
         return 1-(np.exp(sigma*(a-r))/(-1+np.exp(sigma*a)-a*sigma+b*sigma)+(1+a*sigma-b*sigma)/(1-np.exp(sigma*a)+a*sigma-b*sigma))
@@ -125,18 +125,18 @@ def process():
 
     start = time.time()
     print('In Progress...')
- 
+
     pd.options.mode.chained_assignment = None
 
-    pctResAt1MeV = .15
-    p = [0.2121, 0.01838, 0.00031137]
+    pctResAt1MeV = .15 #percent resolution at 1 MeV
+    p = [0.2121, 0.01838, 0.00031137] # E-res fit fuction parameters
 
     g4sfile = h5py.File(sys.argv[1], 'r')
     g4sntuple = g4sfile['default_ntuples']['g4sntuple']
 
     #n=list(g4sntuple.keys())
     #print(n)
-    
+
     ##taking data from g4sntuple and organizing it into a frame. the groups for which there is data is given by print(n).
     g4sdf = pd.DataFrame(np.array(g4sntuple['event']['pages']), columns=['event'])
     g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['step']['pages']), columns=['step']),
@@ -155,29 +155,30 @@ def process():
                        columns=['z']), lsuffix = '_caller', rsuffix = '_other')
 
 
-    detector_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==1)]
+    detector_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==1)] #energy + phys volume cut
     detector_hits['x_weights'] = detector_hits['x'] * detector_hits['Edep']
     detector_hits['y_weights'] = detector_hits['y'] * detector_hits['Edep']
     detector_hits['z_weights'] = detector_hits['z'] * detector_hits['Edep']
 
     procdf= pd.DataFrame(detector_hits.groupby(['event','volID'], as_index=False)['Edep','x_weights','y_weights', 'z_weights'].sum())
+    # rename the summed energy depositions for each step within the event to "energy". This is analogous to the event energy you'd see in your detector
 
-    procdf['x'] = procdf['x_weights']/procdf['Edep']
-    procdf['y'] = procdf['y_weights']/procdf['Edep']
-    procdf['z'] = procdf['z_weights']/procdf['Edep']
+    procdf = procdf.rename(columns={'Edep':'energy'})
+
+    procdf['x'] = procdf['x_weights']/procdf['energy']
+    procdf['y'] = procdf['y_weights']/procdf['energy']
+    procdf['z'] = procdf['z_weights']/procdf['energy']
 
     del procdf['x_weights']
     del procdf['y_weights']
     del procdf['z_weights']
-
-    procdf = procdf.rename(columns={'Edep':'energy'})
 
     ##apply energy resolution function
     procdf['energy'] = procdf['energy'] + np.sqrt(procdf['energy'])*np.random.randn(len(procdf['energy']))*pctResAt1MeV/100
     #procdf['Edep'] = procdf['Edep'] + np.sqrt(p[0]**2+p[1]**2*procdf['Edep']+p[2]**2*procdf['Edep']**2)*np.random.randn(len(procdf['Edep']))*pctResAt1MeV
 
     procdf.to_hdf('processed.hdf5', key='procdf', mode='w')
-    
+
     end = time.time()
     print('Done --- processed.hdf5 has been output!')
     print('Run time = {:.0f} seconds'.format(end-start))
@@ -188,7 +189,7 @@ def process_initial_hits():
         print('Usage: postprocesshdf5.py [filename.hdf5]')
         sys.exit()
 
-    start = time.time()    
+    start = time.time()
     print('In Progress...')
 
     pd.options.mode.chained_assignment = None
@@ -218,10 +219,10 @@ def process_initial_hits():
     g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),
                        columns=['z']), lsuffix = '_caller', rsuffix = '_other')
 
-    df = g4sdf.loc[(g4sdf.volID==1)] 
+    df = g4sdf.loc[(g4sdf.volID==1)]
 
     event = df['event'].values
-    nothing = np.zeros(len(df), dtype=np.float64) 
+    nothing = np.zeros(len(df), dtype=np.float64)
 
     @jit(nopython=True)
     def initial_hits_loop(array1, array_cutter):
@@ -229,7 +230,7 @@ def process_initial_hits():
             a = int(i)+1
             if array1[i]==array1[a]:
                 array_cutter[a] = 1
-        return array_cutter        
+        return array_cutter
 
     initial_hits_loop(event, nothing)
 
@@ -237,7 +238,7 @@ def process_initial_hits():
 
     procdf = df.loc[(df.nothing<1)&(df.volID==1)]
     del procdf['nothing']
-   
+
     procdf.to_hdf('processed_initial_hits.hdf5', key='procdf', mode='w')
 
     end = time.time()
@@ -278,13 +279,13 @@ def process_muon_in_veto():
     g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),
                        columns=['z']), lsuffix = '_caller', rsuffix = '_other')
 
-    ##apply E cut / detID cut 
+    ##apply E cut / detID cut
     veto_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==2)]
-    
+
     ##sum energy collections for each event.
     procdf = pd.DataFrame(veto_hits.groupby(['event','volID'], as_index=False)['Edep'].sum())
     procdf = procdf.rename(columns={'Edep':'energy'})
-    
+
     ##apply energy resolution function
     #procdf['energy'] = procdf['energy'] + np.sqrt(procdf['energy'])*np.random.randn(len(procdf['energy']))*pctResAt1MeV/100
     #procdf['Edep'] = procdf['Edep'] + np.sqrt(p[0]**2+p[1]**2*procdf['Edep']+p[2]**2*procdf['Edep']**2)*np.random.randn(len(procdf['Edep']))*pctResAt1MeV
@@ -326,12 +327,12 @@ def process_muon_without_veto():
 
     ##to see this dataframe simply print(g4sdf).
 
-    ##apply E cut / detID cut 
+    ##apply E cut / detID cut
     detector_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==1)]
-    
+
     ##sum energy collections for each event.
     procdf= pd.DataFrame(detector_hits.groupby(['event','volID'], as_index=False)['Edep'].sum())
-    
+
     Edep = procdf['Edep'].values
     energy = np.zeros(len(Edep), dtype=np.float64)
 
@@ -389,9 +390,9 @@ def process_muon_with_veto():
 
     ##to see this dataframe simply print(g4sdf).
 
-    ##apply E cut / detID cut 
+    ##apply E cut / detID cut
     E_Cut = g4sdf.loc[(g4sdf.Edep>0)]
-    
+
     ##sum energy collections for each event.
     procdf= pd.DataFrame(E_Cut.groupby(['event','volID'], as_index=False)['Edep'].sum())
 
@@ -410,7 +411,7 @@ def process_muon_with_veto():
     veto(volID,event,Edep)
 
     procdf['Edep'] = Edep
-    
+
     procdf = procdf.loc[(procdf.Edep>0)&(procdf.volID==1)]
 
     Edep = procdf['Edep'].values
@@ -424,7 +425,7 @@ def process_muon_with_veto():
             else:
                 array_out[i] = array1[i]
         return array_out
-         
+
     muon_overflow(Edep, energy)
 
     procdf['energy'] = energy
@@ -441,4 +442,3 @@ def process_muon_with_veto():
 
 if __name__ == '__main__':
         main()
-

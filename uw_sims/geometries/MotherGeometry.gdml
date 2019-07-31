@@ -26,7 +26,7 @@ This file is a "mother file" to insert other gdml file geometries into. This fil
 
  <materials>
 
- <element name="hydrogen" formula="H"  Z="1.">  <atom value="1.008"/>  </element>
+  <element name="hydrogen" formula="H"  Z="1.">  <atom value="1.008"/>  </element>
 
   <material name="vacuum">
    <D value="1.e-22" unit="mg/cm3"/>
@@ -53,7 +53,7 @@ This file is a "mother file" to insert other gdml file geometries into. This fil
    <materialref ref="vacuum"/>
    <solidref ref="vacuum_cylinder"/>
    <physvol>
-     <file name="LANL_Gadget.gdml"/>
+     <file name="GDML_Module_Geometry_Volume.gdml"/>
      <positionref ref="center"/>
      <rotationref ref="identity"/>
    </physvol>
@@ -77,5 +77,3 @@ This file is a "mother file" to insert other gdml file geometries into. This fil
   <world ref="world"/>
  </setup>
 </gdml>
-
-
