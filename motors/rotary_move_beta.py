@@ -252,5 +252,22 @@ def rotary_set_zero():
     print("Encoder set to zero, returned: ", ans)
     return ans
 
+def rotary_limit_check():
+
+    g = gclib.py()
+    c = g.GCommand
+    g.GOpen('172.25.100.168 --direct')
+
+    lf_status = float(c('MG _LF B'))
+    lr_status = float(c('MG _LR B'))
+
+    if lf_status == 1:
+        print('Forward switch, rotary stage: off')
+    if lr_status == 1:
+        print('Reverse switch, rotary stage: off')
+    else:
+        print('Forward switch, rotary stage: ON')
+        print('Reverse switch, rotary stage: ON')
+
 if __name__=="__main__":
     main()

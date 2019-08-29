@@ -13,9 +13,13 @@ def main():
     print(' Hello! Welcome to the super ineractive GUI for the CAGE motor movement software! \n')
     print(' WARNING: Did you lift the motor assembly with the rack and pinion? \n \n')
     print(' DO NOT DO ANY MOTOR MOVEMENTS UNLESS ASSEMBLY IS LIFTED OFF THE DETECTOR \n \n')
+
+    source_limit_check()
+    linear_limit_check()
+    rotary_limit_check()
+
     zero = input(' If you haven\'t zeroed the motors to their home positions, would you like to do that now? \n y/n -->')
 
-    print('test')
 
     if zero == 'y':
 

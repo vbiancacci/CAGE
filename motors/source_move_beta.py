@@ -248,15 +248,15 @@ def center_source_motor():
     print(' encoder check')
     enc_pos = source_read_pos()
 
-        if (enc_pos > 8092) and (enc_pos < 8292):
-            print(' encoder position good, beam centered')
-            theta = enc_pos * 360 / 2**14
-            print(theta, ' compared with 180')
-        else:
-            print(' WARNING: Motor did not move designated counts, aborting move')
-            del c #delete the alias
-            g.GClose()
-            exit()
+    if (enc_pos > 8092) and (enc_pos < 8292):
+        print(' encoder position good, beam centered')
+        theta = enc_pos * 360 / 2**14
+        print(theta, ' compared with 180')
+    else:
+        print(' WARNING: Motor did not move designated counts, aborting move')
+        del c #delete the alias
+        g.GClose()
+        exit()
 
     del c #delete the alias
 
@@ -283,6 +283,23 @@ def source_set_zero():
     ans = float(result.output.decode("utf-8"))
     print("Encoder set to zero, returned: ", ans)
     return ans
+
+def source_limit_check():
+
+    g = gclib.py()
+    c = g.GCommand
+    g.GOpen('172.25.100.168 --direct')
+
+    lf_status = float(c('MG _LF B'))
+    lr_status = float(c('MG _LR B'))
+
+    if lf_status == 1:
+        print('Forward switch, source motor: off')
+    if lr_status == 1:
+        print('Reverse switch, source motor: off')
+    else:
+        print('Forward switch, source motor: ON')
+        print('Reverse switch, source motor: ON')
 
 # if __name__=="__main__":
 #     main()
