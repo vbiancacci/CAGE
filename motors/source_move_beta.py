@@ -161,6 +161,7 @@ def source_program():
     print(' Motor has moved to designated position')
     print('Motor counter: ', c('PAC=?'))
     del c #delete the alias
+    g.GClose()
 
 
 def zero_source_motor():
@@ -187,37 +188,42 @@ def zero_source_motor():
     c('BCC=5000')
     print(' Starting move...')
 
-    while True:
+    try:
+        while True:
 
-        c('PRC={}'.format(move))
-        c('BGC') #begin motion
-        g.GMotionComplete('C')
-        print(' encoder check')
-        enc_pos = source_read_pos()
+            c('PRC={}'.format(move))
+            c('BGC') #begin motion
+            g.GMotionComplete('C')
+            print(' encoder check')
+            enc_pos = source_read_pos()
 
-        if b == False:
-            if (enc_pos > 8092) and (enc_pos < 8292):
-                print(' encoder position good, continuing')
-                theta = enc_pos * 360 / 2**14
-                print(theta, ' compared with 180')
-            else:
-                print(' WARNING: Motor did not move designated counts, aborting move')
-                del c #delete the alias
-                g.GClose()
-                exit()
-        if b == True:
-            if (enc_pos < 100) or (enc_pos > 16284):
-                print(' encoder position good, continuing')
-                theta = enc_pos * 360 / 2**14
-                print(theta, ' compared with 0 or 360')
-            else:
-                print(' WARNING: Motor did not move designated counts, aborting move')
-                del c #delete the alias
-                g.GClose()
-                exit()
-        b = not b
+            if b == False:
+                if (enc_pos > 8092) and (enc_pos < 8292):
+                    print(' encoder position good, continuing')
+                    theta = enc_pos * 360 / 2**14
+                    print(theta, ' compared with 180')
+                else:
+                    print(' WARNING: Motor did not move designated counts, aborting move')
+                    del c #delete the alias
+                    g.GClose()
+                    exit()
+            if b == True:
+                if (enc_pos < 100) or (enc_pos > 16284):
+                    print(' encoder position good, continuing')
+                    theta = enc_pos * 360 / 2**14
+                    print(theta, ' compared with 0 or 360')
+                else:
+                    print(' WARNING: Motor did not move designated counts, aborting move')
+                    del c #delete the alias
+                    g.GClose()
+                    exit()
+            b = not b
+
+    except:
+        print('Source motor zeroed')
 
     del c #delete the alias
+    g.GClose()
 
 def center_source_motor():
 

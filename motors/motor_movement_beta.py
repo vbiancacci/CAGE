@@ -41,9 +41,9 @@ def main():
     if source_check == 'y':
         center_source_motor()
 
-    # linear_program()
-    # rotary_program()
-    # source_program()
+    linear_program()
+    rotary_program()
+    source_program()
 
     # g.GClose()
 

@@ -194,38 +194,43 @@ def zero_linear_motor():
     c('BCB=5000')
     print(' Starting move...')
 
-    while True:
+    try:
+        while True:
 
-        c('PRB={}'.format(move))
-        c('BGB') #begin motion
-        g.GMotionComplete('B')
-        print(' encoder check')
-        enc_pos = linear_read_pos()
+            c('PRB={}'.format(move))
+            c('BGB') #begin motion
+            g.GMotionComplete('B')
+            print(' encoder check')
+            enc_pos = linear_read_pos()
 
-        if b == False:
-            if (enc_pos > 8092) and (enc_pos < 8292):
-                print(' encoder position good, continuing')
-                theta = enc_pos * 360 / 2**14
-                print(theta, ' compared with 180')
-            else:
-                print(' WARNING: Motor did not move designated counts, aborting move')
-                del c #delete the alias
-                g.GClose()
-                exit()
-        if b == True:
-            if (enc_pos < 100) or (enc_pos > 16284):
-                print(' encoder position good, continuing')
-                theta = enc_pos * 360 / 2**14
-                print(theta, ' compared with 0 or 360')
-            else:
-                print(' WARNING: Motor did not move designated counts, aborting move')
-                del c #delete the alias
-                g.GClose()
-                exit()
-        b = not b
+            if b == False:
+                if (enc_pos > 8092) and (enc_pos < 8292):
+                    print(' encoder position good, continuing')
+                    theta = enc_pos * 360 / 2**14
+                    print(theta, ' compared with 180')
+                else:
+                    print(' WARNING: Motor did not move designated counts, aborting move')
+                    del c #delete the alias
+                    g.GClose()
+                    exit()
+            if b == True:
+                if (enc_pos < 100) or (enc_pos > 16284):
+                    print(' encoder position good, continuing')
+                    theta = enc_pos * 360 / 2**14
+                    print(theta, ' compared with 0 or 360')
+                else:
+                    print(' WARNING: Motor did not move designated counts, aborting move')
+                    del c #delete the alias
+                    g.GClose()
+                    exit()
+            b = not b
+
+    except gclib.GclibError:
+        print('Linear stage is zeroed')
 
     del c #delete the alias
     g.GClose()
+
 
 
 def linear_read_pos():
