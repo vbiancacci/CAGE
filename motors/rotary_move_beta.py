@@ -261,15 +261,16 @@ def rotary_limit_check():
     c = g.GCommand
     g.GOpen('172.25.100.168 --direct')
 
-    lf_status = float(c('MG _LF B'))
-    lr_status = float(c('MG _LR B'))
+    lf_status = float(c('MG _LF D'))
+    lr_status = float(c('MG _LR D'))
 
     if lf_status == 1:
         print('Forward switch, rotary stage: off')
+    else:
+        print('Forward switch, rotary stage: ON')
     if lr_status == 1:
         print('Reverse switch, rotary stage: off')
     else:
-        print('Forward switch, rotary stage: ON')
         print('Reverse switch, rotary stage: ON')
 
 if __name__=="__main__":

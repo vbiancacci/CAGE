@@ -268,10 +268,11 @@ def linear_limit_check():
 
     if lf_status == 1:
         print('Forward switch, linear stage: off')
+    else:
+        print('Forward switch, linear stage: ON')
     if lr_status == 1:
         print('Reverse switch, linear stage: off')
     else:
-        print('Forward switch, linear stage: ON')
         print('Reverse switch, linear stage: ON')
 
 if __name__=="__main__":

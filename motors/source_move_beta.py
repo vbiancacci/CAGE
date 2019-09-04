@@ -296,15 +296,18 @@ def source_limit_check():
     c = g.GCommand
     g.GOpen('172.25.100.168 --direct')
 
-    lf_status = float(c('MG _LF B'))
-    lr_status = float(c('MG _LR B'))
+    lf_status = float(c('MG _LF C'))
+    lr_status = float(c('MG _LR C'))
+    print(lf_status)
+    print(lr_status)
 
     if lf_status == 1:
         print('Forward switch, source motor: off')
-    if lr_status == 1:
-        print('Reverse switch, source motor: off')
     else:
         print('Forward switch, source motor: ON')
+    if lr_status == 1:
+        print('Reverse switch, source motor off')
+    else:
         print('Reverse switch, source motor: ON')
 
 # if __name__=="__main__":
