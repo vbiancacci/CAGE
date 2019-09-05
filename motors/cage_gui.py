@@ -39,12 +39,12 @@ class DTabWindow(QWidget):
         self.tabs.resize(300,200)
 
         # Add tabs
-        self.tabs.addTab(self.tab1,"Tab 1")
+        self.tabs.addTab(self.tab1,"Motors")
         self.tabs.addTab(self.tab2,"Tab 2")
 
         # Create first tab
         self.tab1.layout = QVBoxLayout(self)
-        self.pushButton1 = QPushButton("PyQt5 button")
+        self.pushButton1 = QPushButton("PyQt5 Button does what?")
         self.tab1.layout.addWidget(self.pushButton1)
         self.tab1.setLayout(self.tab1.layout)
 
@@ -52,15 +52,18 @@ class DTabWindow(QWidget):
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
-    @pyqtSlot()
-    def on_click(self):
-        print("\n")
-        for currentQTableWidgetItem in self.ctr_widget.selectedItems():
-            print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
+        self.pushButton1.clicked.connect(on_click)
+
+@pyqtSlot()
+def on_click(self):
+    alert = QMessageBox()
+    alert.setText('You clicked the button!')
+    alert.exec_()
+    print("\n")
+    # for currentQTableWidgetItem in self.ctr_widget.selectedItems():
+    #     print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
 
 
 
 if __name__=="__main__":
     main()
-
-

@@ -14,8 +14,8 @@ def main():
 
 def example():
 
-    rotary_move = 90
-    linear_move = 2
+    rotary_move = -90
+    linear_move = 20
     source_move = 45
 
     print('Welcome to the CAGE motor demonstration program')
