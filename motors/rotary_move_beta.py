@@ -174,6 +174,10 @@ def rotary_program():
 
 def zero_rotary_motor():
 
+    g = gclib.py()
+    c = g.GCommand
+    g.GOpen('172.25.100.168 --direct')
+
     zero = rotary_set_zero()
     while (zero > 10) and (zero < 16374):
         zero = rotary_set_zero()
@@ -218,7 +222,6 @@ def zero_rotary_motor():
                     print(theta, ' compared with 0 or 360')
                 else:
                     print(' WARNING1: Motor did not move designated counts, aborting move')
-                    print((checks, rem, move, enc_pos, theta, b))
                     del c #delete the alias
                     g.GClose()
                     exit()

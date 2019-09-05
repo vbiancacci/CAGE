@@ -228,6 +228,126 @@ def zero_linear_motor():
     except gclib.GclibError:
         print('Linear stage is zeroed')
 
+        print('Moving motor 3mm to align axes')
+
+        zero = linear_set_zero()
+        while (zero > 10) and (zero < 16374):
+            zero = linear_set_zero()
+
+        mm = 3
+        cts = 100244
+
+        if mm < 0:
+            checks, rem = divmod(-cts, 25000)
+            move = -25000
+            rem = -1 * rem
+        else:
+            checks, rem = divmod(cts, 25000)
+            move = 25000
+        b = False
+        i = 0
+
+        c('AB')
+        c('MO')
+        c('SHB')
+        c('SPB=15000')
+        c('ACB=5000')
+        c('BCB=5000')
+        print(' Starting move...')
+
+        if checks != 0:
+            while i < checks:
+
+                c('PRB={}'.format(move))
+                c('BGB') #begin motion
+                g.GMotionComplete('B')
+                print(' encoder check')
+                enc_pos = linear_read_pos()
+
+                if b == False:
+                    if (enc_pos > 8092) and (enc_pos < 8292):
+                        print(' encoder position good, continuing')
+                        theta = enc_pos * 360 / 2**14
+                        print(theta, ' compared with 180')
+                    else:
+                        print(' WARNING: Motor did not move designated counts, aborting move')
+                        del c #delete the alias
+                        g.GClose()
+                        exit()
+                if b == True:
+                    if (enc_pos < 100) or (enc_pos > 16284):
+                        print(' encoder position good, continuing')
+                        theta = enc_pos * 360 / 2**14
+                        print(theta, ' compared with 0 or 360')
+                    else:
+                        print(' WARNING: Motor did not move designated counts, aborting move')
+                        del c #delete the alias
+                        g.GClose()
+                        exit()
+                b = not b
+                i += 1
+
+        if rem != 0:
+            c('PRB={}'.format(rem))
+            c('BGB') #begin motion
+            g.GMotionComplete('B')
+
+            print(' encoder check')
+            enc_pos = linear_read_pos()
+
+            if rem < 0:
+                bits = 2**14 + (rem * 2**14 / 50000)
+
+                if b == False:
+                    if (enc_pos > (bits - 100)) and (enc_pos < (bits + 100)):
+                        print(' encoder position good')
+                        theta = enc_pos * 360 / 2**14
+                        deg = rem * 360 / 50000
+                        print(theta, ' compared with ', deg)
+                    else:
+                        print(' WARNING: Motor did not move designated counts, aborting move')
+                        del c #delete the alias
+                        g.GClose()
+                        exit()
+                if b == True:
+                    if (enc_pos < (bits - 8092)) and (enc_pos > (bits - 8292)):
+                         print(' encoder position good')
+                         theta = enc_pos * 360 / 2**14
+                         deg = rem * 360 / 50000 + 180
+                         print(theta, ' compared with ', deg)
+                    else:
+                        print(' WARNING: Motor did not move designated counts, aborting move')
+                        del c #delete the alias
+                        g.GClose()
+                        exit()
+
+            else:
+                bits = rem * 2**14 / 50000
+
+                if b == False:
+                    if (enc_pos > (bits - 100)) and (enc_pos < (bits + 100)):
+                        print(' encoder position good')
+                        theta = enc_pos * 360 / 2**14
+                        deg = rem * 360 / 50000
+                        print(theta, ' compared with ', deg)
+                    else:
+                        print(' WARNING: Motor did not move designated counts, aborting move')
+                        del c #delete the alias
+                        g.GClose()
+                        exit()
+                if b == True:
+                    if (enc_pos > (bits + 8092)) or (enc_pos < 100):
+                         print(' encoder position good')
+                         theta = enc_pos * 360 / 2**14
+                         deg = rem * 360 / 50000 + 180
+                         print(theta, ' compared with ', deg)
+                    else:
+                        print(' WARNING: Motor did not move designated counts, aborting move')
+                        del c #delete the alias
+                        g.GClose()
+                        exit()
+
+
     del c #delete the alias
     g.GClose()
 
