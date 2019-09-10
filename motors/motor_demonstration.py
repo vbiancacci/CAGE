@@ -4,19 +4,16 @@ from pprint import pprint
 import spur
 import numpy as np
 import time
-from source_move_beta import *
-from linear_move_beta import *
-from rotary_move_beta import *
 
 def main():
 
-    example()
+    demonstration()
 
-def example():
+def demonstration():
 
-    rotary_move = -90
-    linear_move = 20
-    source_move = 45
+    rotary_move = -90 #degrees
+    linear_move = 20 #mm
+    source_move = 45 #degrees
 
     print('Welcome to the CAGE motor demonstration program')
     time.sleep(3)

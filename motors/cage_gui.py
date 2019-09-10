@@ -5,6 +5,9 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
+from source_move_beta import *
+from linear_move_beta import *
+from rotary_move_beta import *
 
 
 def main():
@@ -60,6 +63,7 @@ def on_click(self):
     alert.setText('You clicked the button!')
     alert.exec_()
     print("\n")
+    rotary_program()
     # for currentQTableWidgetItem in self.ctr_widget.selectedItems():
     #     print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
 
