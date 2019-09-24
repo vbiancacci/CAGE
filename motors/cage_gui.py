@@ -5,6 +5,10 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
+from source_move_beta import *
+from linear_move_beta import *
+from rotary_move_beta import *
+from motor_movement_beta import movement_program
 
 
 def main():
@@ -40,26 +44,78 @@ class DTabWindow(QWidget):
 
         # Add tabs
         self.tabs.addTab(self.tab1,"Motors")
-        self.tabs.addTab(self.tab2,"Tab 2")
+        self.tabs.addTab(self.tab2,"Slow Controls")
 
-        # Create first tab
+        # Create tabs
         self.tab1.layout = QVBoxLayout(self)
-        self.pushButton1 = QPushButton("PyQt5 Button does what?")
+        self.tab2.layout = QVBoxLayout(self)
+        self.pushButton1 = QPushButton("Move Motors...or dont, i dont care")
         self.tab1.layout.addWidget(self.pushButton1)
         self.tab1.setLayout(self.tab1.layout)
+        self.pushButton2 = QPushButton('Slow Controls Monitoring')
+        self.tab2.layout.addWidget(self.pushButton2)
+        self.tab2.setLayout(self.tab2.layout)
 
         # Add tabs to widget
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
-        self.pushButton1.clicked.connect(on_click)
+        self.pushButton1.clicked.connect(self.on_motor_clicked)
+        # self.dialog = DMotors(self)
 
-@pyqtSlot()
-def on_click(self):
-    alert = QMessageBox()
-    alert.setText('You clicked the button!')
-    alert.exec_()
-    print("\n")
+        self.pushButton2.clicked.connect(self.on_slowControls_clicked)
+        # self.dialog = DSlowControls(self)
+
+
+    def on_motor_clicked(self):
+        self.dialog = DMotors(self)
+        self.dialog.show()
+    def on_slowControls_clicked(self):
+        self.dialog = DSlowControls(self)
+        self.dialog.show()
+
+class DMotors(QMainWindow):
+    def __init__(self, parent=None):
+        super(DMotors, self).__init__(parent)
+        self.ctr_widget = DMotorWindow(self)
+        self.setCentralWidget(self.ctr_widget)
+
+
+class DMotorWindow(QWidget):
+    def __init__(self, parent):
+        super(QWidget, self).__init__(parent)
+        self.layout = QHBoxLayout(self)
+
+
+        self.pushButton1 = QPushButton('Movement Program')
+        self.pushButton2 = QPushButton('Linear Stage')
+        self.pushButton3 = QPushButton('Source Motor')
+
+
+        self.layout.addWidget(self.pushButton1)
+        self.layout.addWidget(self.pushButton2)
+        self.layout.addWidget(self.pushButton3)
+        self.setLayout(self.layout)
+
+        self.pushButton1.clicked.connect(self.movement_click)
+        self.pushButton2.clicked.connect(self.linear_click)
+        self.pushButton3.clicked.connect(self.source_click)
+
+    @pyqtSlot()
+    def movement_click(self):
+        movement_program()
+    def linear_click(self):
+        linear_program()
+    def source_click(self):
+        source_program()
+
+class DSlowControls(QMainWindow):
+    def __init__(self, parent=None):
+        super(DSlowControls, self).__init__(parent)
+        # self.ctr_widget = DMotorWindow(self)
+        # self.setCentralWidget(self.ctr_widget)
+
+# @pyqtSlot()
     # for currentQTableWidgetItem in self.ctr_widget.selectedItems():
     #     print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
 

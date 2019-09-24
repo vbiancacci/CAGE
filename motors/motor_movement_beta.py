@@ -10,13 +10,17 @@ from rotary_move_beta import *
 
 def main():
 
+    movement_program()
+
+def movement_program():
+
     print(' Hello! Welcome to the super ineractive GUI for the CAGE motor movement software! \n')
     print(' WARNING: Did you lift the motor assembly with the rack and pinion? \n \n')
     print(' DO NOT DO ANY MOTOR MOVEMENTS UNLESS ASSEMBLY IS LIFTED OFF THE DETECTOR \n \n')
 
+    rotary_limit_check()
     source_limit_check()
     linear_limit_check()
-    rotary_limit_check()
 
     zero = input(' If you haven\'t zeroed the motors to their home positions, would you like to do that now? \n y/n -->')
 
@@ -41,8 +45,8 @@ def main():
     if source_check == 'y':
         center_source_motor()
 
+    # rotary_program()
     linear_program()
-    rotary_program()
     source_program()
 
     # g.GClose()

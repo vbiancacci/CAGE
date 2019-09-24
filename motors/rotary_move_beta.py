@@ -66,11 +66,11 @@ def rotary_program():
     c('AB')
     c('MO')
     c('SHD')
-    c('SPD=15000')
+    c('SPD=300000')
     if load == 0:
         c('DPD=0')
-    c('ACD=5000')
-    c('BCD=5000')
+    c('ACD=300000')
+    c('BCD=300000')
     print(' Starting move...')
 
     if checks != 0:
@@ -191,9 +191,9 @@ def zero_rotary_motor():
     c('AB')
     c('MO')
     c('SHD')
-    c('SPD=15000')
-    c('ACD=5000')
-    c('BCD=5000')
+    c('SPD=300000')
+    c('ACD=300000')
+    c('BCD=300000')
     print(' Starting move...')
 
     try:
