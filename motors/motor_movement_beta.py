@@ -45,7 +45,7 @@ def movement_program():
     if source_check == 'y':
         center_source_motor()
 
-    rotary_program()
+    # rotary_program()
     linear_program()
     source_program()
 

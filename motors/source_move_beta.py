@@ -298,8 +298,6 @@ def source_limit_check():
 
     lf_status = float(c('MG _LF C'))
     lr_status = float(c('MG _LR C'))
-    print(lf_status)
-    print(lr_status)
 
     if lf_status == 1:
         print('Forward switch, source motor: off')

@@ -66,11 +66,11 @@ def linear_program():
     c('AB')
     c('MO')
     c('SHB')
-    c('SPB=15000')
+    c('SPB=300000')
     if load == 0:
         c('DPB=0')
-    c('ACB=5000')
-    c('BCB=5000')
+    c('ACB=300000')
+    c('BCB=300000')
     print(' Starting move...')
 
     if checks != 0:
@@ -189,9 +189,9 @@ def zero_linear_motor():
     c('AB')
     c('MO')
     c('SHB')
-    c('SPB=15000')
-    c('ACB=5000')
-    c('BCB=5000')
+    c('SPB=300000')
+    c('ACB=300000')
+    c('BCB=300000')
     print(' Starting move...')
 
     try:
@@ -250,9 +250,9 @@ def zero_linear_motor():
         c('AB')
         c('MO')
         c('SHB')
-        c('SPB=15000')
-        c('ACB=5000')
-        c('BCB=5000')
+        c('SPB=300000')
+        c('ACB=300000')
+        c('BCB=300000')
         print(' Starting move...')
 
         if checks != 0:
