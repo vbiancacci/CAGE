@@ -33,11 +33,8 @@ def main():
     dm = DataMonitor()
         
     if not args["debug"]:
-        print("do i get here?")
         exit(app.exec_())
     
-
-
 
 class DataMonitor(QMainWindow):
     """
@@ -122,7 +119,7 @@ class DBMonitor(QWidget):
         self.connection = psycopg2.connect(
             host = self.config["cage_daq"],
             dbname = self.config["db_name"],
-            user = self.config["user"],
+            user = self.config["db_user"],
             password = self.config["password"]
             )
         self.cursor = self.connection.cursor()
@@ -244,11 +241,8 @@ class RabbitQueueMonitor():
         
         
 
-    # def __enter__(self):
-    # 
-    #     self.consume(keys=[...], callback=self.read_records)
-    # 
-    #     # return self
+    def __enter__(self):
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.conn.close()
