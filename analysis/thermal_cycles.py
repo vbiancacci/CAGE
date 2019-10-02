@@ -43,8 +43,10 @@ def main():
     
     # -- run analysis -- 
     # get_endpoints()
-    get_cooldown_data()
-    plot_cooldown_data()
+    # get_cooldown_data()
+    # plot_cooldown_data()
+    
+    get_temp()
     
 
 def get_endpoints():
@@ -144,6 +146,18 @@ def plot_cooldown_data():
     
     plt.tight_layout()
     plt.show()
+    
+
+def get_temp():
+    """
+    example of quickly accessing the DB to get something 'now'.
+    """
+    endpoints = ["mj60_temp"]
+    t_earlier_aug = '2019-10-01T00:00'
+    t_later_aug = datetime.now().isoformat()
+    dfs = pandas_db_query(endpoints, t_earlier_aug, t_later_aug)
+    print(dfs["mj60_temp"])
+    
     
 
 if __name__=="__main__":
