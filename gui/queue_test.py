@@ -1,53 +1,118 @@
 #!/usr/bin/env python3
+import time
 import json
-import multiprocessing
+import numpy as np
+import multiprocessing as mp
 from pprint import pprint
 import collections
 import pika
 import psycopg2
-
 from dateutil import parser
 from datetime import datetime, timedelta
-
+import pyqtgraph as pg
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLayout, QTabWidget
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main():
     """
     """
-    # consumer_thread = multiprocessing.Process(target=start_listener)
-    # consumer_thread.start()
-    
-    # read_queue()
-    # exit()
-    
-    start_listener()
-    
-    # # test the non-blocking queue reader
-    # def start_listener():
-    #     with RabbitQueueMonitor() as consumer:
-    #         consumer.consume(endpoints=[...], callback=listen)
-    # rabbit_thread = multiprocessing.Process(target=start_listener)
-    # rabbit_thread.start()
-    # exit()
+    # run normally
+    # start_listener()
 
-
-def start_listener():
-    """
-    for now i'm also using datetime objects directly, but i might need to be able
-    to start with string objects.
-    it would also be cool to have a graphical calendar select in the GUI.
+    # quick test of message passing w/ multiprocessing module
+    # test_mp_queue()
     
-    example key list as of Sep 2019:
-    ['mj60_temp', 'mj60_baseline', 'mj60_pressure', 'mj60_hv_vset', 
-    'mj60_hv_vmon', 'mj60_hv_imon', 'mj60_hv_rup', 'mj60_hv_rdown', 
-    'mj60_hv_status', 'mj60_ln_level', 'cage_pressure', 
-    'cage_coldPlate_temp', 'cage_ln_level', 'cage_motor_temp', 
-    'cage_topHat_temp']
+    # test appending to deque (internal circular buffer of QueueMonitor)
+    # test_append()
+    
+    # run in separate thread with queue for passing messages
+    # monitor_queue = mp.Queue()
+    # monitor_thread = mp.Process(target=start_listener, args=(monitor_queue,))
+    # monitor_thread.start()
+    
+    # while True:
+    #     time.sleep(5)
+    #     val = monitor_queue.get()
+    #     print("got:")
+    #     pprint(val)
+    
+    app = QtGui.QApplication([])
+    mw = QtGui.QMainWindow()
+    mw.setWindowTitle('pyqtgraph example: PlotWidget')
+    mw.resize(700,500)
+    cw = QtGui.QWidget()
+    mw.setCentralWidget(cw)
+    l = QtGui.QVBoxLayout()
+    cw.setLayout(l)
+
+    pw = pg.PlotWidget(name='Plot1') 
+    l.addWidget(pw)
+    mw.show()
+
+    # Create an empty plot curve to be filled later, set its pen
+    p1 = pw.plot()
+    # p1.setPen((200,200,100))
+    p1.setPen('g')
+    pw.setLabel('left', 'Value', units='V')
+    pw.setLabel('bottom', 'Time', units='s')
+    # pw.setXRange(0, 2)
+    pw.setYRange(0, 1e-10) 
+
+    def rand(n):
+        data = np.random.random(n)
+        data[int(n*0.1):int(n*0.13)] += .5
+        data[int(n*0.18)] += 2
+        data[int(n*0.1):int(n*0.13)] *= 5
+        data[int(n*0.18)] *= 20
+        data *= 1e-12
+        return data, np.arange(n, n+len(data)) / float(n)
+
+    # fill in the values before starting the update loop
+    yd, xd = rand(1000)
+    p1.setData(y=yd, x=xd)
+
+    def updateData():
+        yd, xd = rand(1000)
+        p1.setData(y=yd, x=xd)
+
+    # Start a timer to rapidly update the plot
+    # t = QtCore.QTimer()
+    # t.timeout.connect(updateData)
+    # t.start(1000) # originally 50.  update interval in ms.
+
+    # Start the main event loop
+    QtGui.QApplication.instance().exec_()
+    
+
+def test_mp_queue():
     """
-    key_list = ["mj60_baseline", "cage_pressure"]
-    start = "2019-09-25"
+    taken from the multiprocessing documentation, about passing data out
+    of a queue s/t another process can grab it.
+    """
+    def f(q):
+        q.put([42, None, 'hello'])
+        # print("blah") # prints to screen
+
+    q = mp.Queue()
+    p = mp.Process(target=f, args=(q,))
+    p.start()
+    rval = q.get()
+    print(type(rval), rval)
+    
+    # kills process
+    p.join() 
+    
+
+def start_listener(mpq=None):
+    """
+    """
+    endpoints = ["mj60_baseline"]
+    start = "2019-09-30"
     end = "now" 
-    with QueueMonitor(key_list, start, end) as qmon:
-        qmon.listen()
+    qmon = QueueMonitor(endpoints, start, end, mpq=mpq)
+    qmon.listen()
 
 
 class QueueMonitor():
@@ -60,7 +125,7 @@ class QueueMonitor():
     whichever comes first.
     """
     def __init__(self, endpoints=None, start_date=None,
-                 end_date=None, val_name="value_cal"):
+                 end_date=None, val_name="value_cal", mpq=None):
         with open('config.json') as f:
             self.config = json.load(f)
 
@@ -73,6 +138,9 @@ class QueueMonitor():
         self.conn = pika.BlockingConnection(self.cpars)
         self.channel = self.conn.channel()
         self.channel.exchange_declare(exchange='cage', exchange_type='topic')
+        
+        # multiprocessing queue for passing messages out of the thread
+        self.mpq = mpq
         
         # circular buffers to store data from each sensor (key) of interest
         self.endpoints = endpoints
@@ -87,7 +155,7 @@ class QueueMonitor():
         else:
             self.start = self.get_datetime(start_date)
         if (start_date is not None) or (end_date is not None):
-            self.prefill_db(self.endpoints, self.val_name)
+            self.prefill_deque(self.endpoints, self.val_name)
 
         
     def __enter__(self):
@@ -103,7 +171,7 @@ class QueueMonitor():
         take an input string from the user and parse to a datetime obj
         """
         if date_str == "now" or date_str is None:
-            return datetime.now()
+            return datetime.utcnow()
         try:
             return parser.parse(date_str)
         except:
@@ -111,7 +179,7 @@ class QueueMonitor():
             exit()
         
                 
-    def prefill_db(self, endpoints=None, val_name="value_cal"):
+    def prefill_deque(self, endpoints=None, val_name="value_cal"):
         """
         pre-fill the data lists with a postgres call
         """
@@ -149,35 +217,15 @@ class QueueMonitor():
             cursor.execute(query)
             record = cursor.fetchall()
             
+            # separate value and timestamp (not using dataframe b/c appending)
+            xv = [r[1] for r in record]
+            yv = [r[0] for r in record]
+            
             # replace the entire data list with tuples: (value, timestamp)
-            self.data_lists[key] = collections.deque(record, maxlen=self.n_list)
+            self.data_lists[key] = collections.deque(yv, maxlen=self.n_list)
+            self.data_lists[key + "_ts"] = collections.deque(xv, maxlen=self.n_list)
             
-            # check values
-            self.plot_lists()
-        
-        
-    def plot_lists(self):
-        """
-        """
-        for name, vals in self.data_lists.items():
-            values = [v[0] for v in vals]
-            tstamps = [v[1] for v in vals]
-            print(name, len(vals))
-            
-            for ts in tstamps[:5]:
-                print(ts)
-            print("...")
-            for ts in tstamps[-5:]:
-                print(ts)
-            # exit()
-
-            # diagnostic plot, don't delete
-            import matplotlib.pyplot as plt
-            plt.plot(tstamps, values, ".")
-            plt.show()
-            exit()
-
-
+    
     def listen(self):
         """
         using the pika BlockingConnection, we listen to the queue.  when we
@@ -185,22 +233,22 @@ class QueueMonitor():
         """
         result = self.channel.queue_declare(queue=self.config['queue'], 
                                             exclusive=True)
-        queue_name = result.method.queue
-        
         if self.endpoints is not None:
             for key in self.endpoints:
                 self.channel.queue_bind(exchange=self.config['exchange'], 
                                         queue=self.config['queue'],
-                                        routing_key=key)
+                                        routing_key=f"sensor_value.{key}")
         else:
             self.channel.queue_bind(exchange=self.config['exchange'],
                                     queue=self.config['queue'],
                                     routing_key="sensor_value.#")
                                 
-        self.channel.basic_consume(queue=queue_name, 
+        self.channel.basic_consume(queue=self.config['queue'], 
                                    on_message_callback=self.decode_values, 
                                    auto_ack=True)
-        
+
+        # starts a while-type loop
+        print("wabbit eatin hay")
         self.channel.start_consuming()
         
         
@@ -224,11 +272,16 @@ class QueueMonitor():
         record = json.loads(body.decode()) # decode binary string to dict
         # pprint(record)
         
+        if self.mpq is not None:
+            self.mpq.put(record)
+        
+        return
+        
         # get the name of the record, strip off 'sensor_value.'
         endpoint_name = key.split('.')[-1]
         
-        if endpoint_name not in self.data_lists:
-            self.data_lists[key] = collections.deque(maxlen=5000)
+        # if endpoint_name not in self.data_lists:
+            # self.data_lists[key] = collections.deque(maxlen=5000)
         
         # right now, save only the values and ignore the sender_info
         cal, raw = None, None
@@ -250,7 +303,54 @@ class QueueMonitor():
             
             if cal is not None:
                 self.data_lists["cal"].append(cal)
+
+
+def test_append():
+    """
+    test record decoding and plotting (no active loop)
+    """
+    import matplotlib.pyplot as plt
+    endpoints = ["mj60_baseline"]
+    start = "2019-09-30"
+    end = "now" 
+    end = '2019-10-03T16:01:56.699883'
+    qmon = QueueMonitor(endpoints, start, end)
     
+    # a record we would have gotten from 'qmon.listen'
+    record = {
+        'msgtype': 4,
+        'payload': {
+            'value_cal': -5.32175, 'value_raw': 1.056375},
+        'sender_info': {
+            'commit': 'g7190b92',
+             'exe': '/home/pi/controls/latest/bin/dragonfly',
+             'hostname': 'scannerpi',
+             'package': 'dripline',
+             'service_name': 'scannerpi_service',
+             'username': 'pi',
+             'version': 'v3.7.3'},
+        'timestamp': '2019-10-03T16:02:20.543470Z'
+    }
+
+    # ts = datetime.fromisoformat(record["timestamp"]) # can't handle the "Z"
+    ts = parser.parse(record["timestamp"]) # this works
+    val = record["payload"]["value_cal"]
+    
+    # append new values
+    qmon.data_lists["mj60_baseline_ts"].append(ts)
+    qmon.data_lists["mj60_baseline"].append(val)
+    
+    # make the plot
+    xv = qmon.data_lists["mj60_baseline_ts"]
+    yv = qmon.data_lists["mj60_baseline"]
+    plt.plot(xv, yv, "-r")
+
+    # superimpose the new point again
+    plt.plot(ts, val, ".b", ms='10')
+
+    plt.gcf().autofmt_xdate() # rotates labels
+    plt.show()
+        
 
 if __name__=="__main__":
     main()

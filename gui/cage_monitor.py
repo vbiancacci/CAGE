@@ -60,6 +60,9 @@ class DataMonitor(QMainWindow):
         # st2 = MotorMonitor()
         st2 = QWidget() # blank
         tabs.addTab(st2,"Motor Controller")
+        
+        # tab 3 -- MJ60 DB monitor?
+        # also need an HV biasing & interlock widget
 
         self.setCentralWidget(tabs)
         self.show()
@@ -71,8 +74,6 @@ class DBMonitor(QWidget):
         self.show()
         self.resize(1000,1000)
         self.tree = ParameterTree()
-        
-        
         
         # declare the parameter tree
         self.params = [

@@ -3,16 +3,14 @@ import sys
 import argparse
 import json
 import multiprocessing
-
 import pika
 import psycopg2
 import numpy as np
-
+from pprint import pprint
 import pyqtgraph as pg
 from pyqtgraph.parametertree import ParameterTree, Parameter
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLayout, QTabWidget
 
@@ -24,7 +22,8 @@ def main():
     arg('-d', '--debug', action=st, help='debug mode')
     args = vars(par.parse_args())
     
-    # read_queue()
+    read_queue()
+    exit()
     # read_db()
 
     # Create the main application
@@ -169,20 +168,28 @@ def read_queue():
     connection = pika.BlockingConnection(cpars)
     channel = connection.channel()
 
-    channel.exchange_declare(exchange='alerts', exchange_type='topic')
-    queue_name = 'hello'
-    channel.queue_declare(queue=queue_name, exclusive=True)
-    channel.queue_bind(queue=queue_name, exchange='alerts', routing_key='sensor_value.#')
-
-    def callback(ch, method, properties, body):
-        print(" [x] Received %r" % body)
-
-    channel.basic_consume(queue='hello', on_message_callback=callback, 
+    channel.exchange_declare(exchange=config["exchange"], exchange_type='topic')
+    
+    channel.queue_declare(queue=config["queue"], exclusive=True)
+    
+    channel.queue_bind(queue=config["queue"], exchange=config["exchange"], 
+                       routing_key='sensor_value.#')
+    
+    channel.basic_consume(queue=config["queue"], on_message_callback=callback, 
                           auto_ack=True)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
-    
+
+
+def callback(ch, method, properties, body):
+    """
+    the callback function can be defined inside or outside read_queue,
+    and can also be a member of 'self' when defined as part of a class
+    """
+    record = json.loads(body.decode()) # decode binary string to dict
+    pprint(record)
+
     
 def read_db():
     """

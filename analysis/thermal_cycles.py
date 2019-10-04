@@ -152,11 +152,11 @@ def get_temp():
     """
     example of quickly accessing the DB to get something 'now'.
     """
-    endpoints = ["mj60_temp"]
-    t_earlier_aug = '2019-10-01T00:00'
-    t_later_aug = datetime.now().isoformat()
+    endpoints = ["cage_coldPlate_temp"]
+    t_earlier_aug = '2019-10-02T00:00'
+    t_later_aug = datetime.utcnow().isoformat()
     dfs = pandas_db_query(endpoints, t_earlier_aug, t_later_aug)
-    print(dfs["mj60_temp"])
+    print(dfs["cage_coldPlate_temp"].tail())
     
     
 
