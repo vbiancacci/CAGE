@@ -28,62 +28,15 @@ def main():
     # test_append()
     
     # run in separate thread with queue for passing messages
-    # monitor_queue = mp.Queue()
-    # monitor_thread = mp.Process(target=start_listener, args=(monitor_queue,))
-    # monitor_thread.start()
+    monitor_queue = mp.Queue()
+    monitor_thread = mp.Process(target=start_listener, args=(monitor_queue,))
+    monitor_thread.start()
     
-    # while True:
-    #     time.sleep(5)
-    #     val = monitor_queue.get()
-    #     print("got:")
-    #     pprint(val)
-    
-    app = QtGui.QApplication([])
-    mw = QtGui.QMainWindow()
-    mw.setWindowTitle('pyqtgraph example: PlotWidget')
-    mw.resize(700,500)
-    cw = QtGui.QWidget()
-    mw.setCentralWidget(cw)
-    l = QtGui.QVBoxLayout()
-    cw.setLayout(l)
-
-    pw = pg.PlotWidget(name='Plot1') 
-    l.addWidget(pw)
-    mw.show()
-
-    # Create an empty plot curve to be filled later, set its pen
-    p1 = pw.plot()
-    # p1.setPen((200,200,100))
-    p1.setPen('g')
-    pw.setLabel('left', 'Value', units='V')
-    pw.setLabel('bottom', 'Time', units='s')
-    # pw.setXRange(0, 2)
-    pw.setYRange(0, 1e-10) 
-
-    def rand(n):
-        data = np.random.random(n)
-        data[int(n*0.1):int(n*0.13)] += .5
-        data[int(n*0.18)] += 2
-        data[int(n*0.1):int(n*0.13)] *= 5
-        data[int(n*0.18)] *= 20
-        data *= 1e-12
-        return data, np.arange(n, n+len(data)) / float(n)
-
-    # fill in the values before starting the update loop
-    yd, xd = rand(1000)
-    p1.setData(y=yd, x=xd)
-
-    def updateData():
-        yd, xd = rand(1000)
-        p1.setData(y=yd, x=xd)
-
-    # Start a timer to rapidly update the plot
-    # t = QtCore.QTimer()
-    # t.timeout.connect(updateData)
-    # t.start(1000) # originally 50.  update interval in ms.
-
-    # Start the main event loop
-    QtGui.QApplication.instance().exec_()
+    while True:
+        time.sleep(5)
+        val = monitor_queue.get()
+        print("got:")
+        pprint(val)
     
 
 def test_mp_queue():
