@@ -4,19 +4,22 @@ import time
 import json
 import argparse
 import psycopg2
+import collections
 import pika
-import multiprocessing
 import numpy as np
 from pprint import pprint
-
-import pyqtgraph as pg
-from pyqtgraph.parametertree import ParameterTree, Parameter
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+from dateutil import parser
+from datetime import datetime, timedelta
+
+import pyqtgraph as pg
+from pyqtgraph.parametertree import ParameterTree, Parameter
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+
 
 # === PRIMARY EVENT LOOP =======================================================
 
@@ -39,16 +42,15 @@ def main():
     # debug a single plot widget
     # rp = RabbitPlot(["cage_pressure"], "2019-10-04T17:30", "now")
     
-    # connect the RabbitPlot emit signal
+    # connect the RabbitPlot emit signal for live updating
     pool = QThreadPool()
     listener = RabbitListener()
-    # listener.signals.target.connect(rp.update_data)
     listener.signals.target.connect(cm.dbmon.rp.update_data)
     pool.start(listener)
         
     # start the main Qt loop
-    # if not args["debug"]:
-    exit(app.exec_())
+    if not args["debug"]:
+        exit(app.exec_())
     
 
 # === PRIMARY GUI WINDOW =======================================================
@@ -63,13 +65,12 @@ class CAGEMonitor(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('CAGE Detector Monitor')
-        self.setGeometry(0, 0, 1000, 900)
+        self.setGeometry(0, 0, 1200, 800)
         
         tabs = QTabWidget()
 
         # tab 1 -- db monitor
         self.dbmon = DBMonitor()
-        self.dbmon.init_gui()
         tabs.addTab(self.dbmon,"DB Monitor")
         
         # tab 2 -- motor controller
@@ -86,15 +87,17 @@ class CAGEMonitor(QMainWindow):
 
 class DBMonitor(QWidget):
     """
-    Our first widget (tab).  Allows us to monitor values posted to the CAGE DB.
-    Available data streams are called "endpoints": mj60_baseline, cage_pressure, etc.
+    DBMonitor is a grid of QWidgets, displayed in a tab of CAGEMonitor.
+    Available data streams are "endpoints": mj60_baseline, cage_pressure, etc.
+    TODO: add moveable cross hairs, check the crosshair.py example
     """
     def __init__(self):
         super().__init__()
         self.show()
-        self.resize(1000,1000)
         
-        # establish a postgres-style connection
+        print("Connecting to DB ...")
+        
+        # establish a postgres connection
         with open("config.json") as f:
             self.config = json.load(f)
 
@@ -107,121 +110,175 @@ class DBMonitor(QWidget):
         self.cursor = self.connection.cursor()
 
         # get a list of all available endpoints in the DB
-        # save info: {endpoint_name : type (usually 'numeric' or 'string')}
-        self.endpoints = {}
         self.cursor.execute("SELECT * FROM endpoint_id_map;")
+        
+        self.endpt_types = {}
         for rec in self.cursor.fetchall():
-            self.endpoints[rec[1]] = rec[2]
-        # pprint(self.endpoints)
+            self.endpt_types[rec[1]] = rec[2]
+        self.endpt_list = [key for key in self.endpt_types]
         
-        # declare the parameter tree
-        self.tree = ParameterTree()
-        self.params = [
-            {'name': 'Basic parameter data types', 
-             'type': 'group', 
-             'children': [
-                 {'name': 'Named List', 'type': 'list', 
-                  'values': {"one": 1, "two": "twosies", "three": [3,3,3]}}, 
-                 {'name': 'Action 1', 'type': 'action'},
-                 {'name': 'Action 2', 'type': 'action'},
-                 {'name': 'Integer', 'type': 'int', 'value': 10},
-                 {'name': 'Float', 'type': 'float', 'value': 10.5, 'step': 0.1},
-                 {'name': 'String', 'type': 'str', 'value': "hi"},
-                 {'name': 'List', 'type': 'list', 'values': [1,2,3], 'value': 2}
-                 ]}]
-
-
-    def init_gui(self):
+        self.endpts_enabled = []
+        for endpt in self.endpt_types:
+            self.endpts_enabled.append({'name':endpt, 'type':'bool', 'value':False})
         
-        p = Parameter.create(name='params', type='group', children=self.params)
-        
-        @pyqtSlot(dict)
-        def change(param, changes):
-            # could also emit stuff here
-            # identify changes in the ParameterTree.
-            print("tree changes:")
+        self.endpts_enabled[10]['value'] = True
             
-            for param, change, data in changes:
-                path = p.childPath(param)
-                if path is not None:
-                    childName = '.'.join(path)
-                else:
-                    childName = param.name()
-                print('  parameter: %s'% childName)
-                print('  change:    %s'% change)
-                print('  data:      %s'% str(data))
-                print('  ----------')
+        # default time window of 1 day
+        t_later = datetime.utcnow()
+        t_earlier = datetime.utcnow() - timedelta(hours=4)
         
-        p.sigTreeStateChanged.connect(change)
+        # create a parameter tree widget from the DB endpoints
+        pt_initial = [
+            {'name': 'Run Query', 'type': 'group', 
+             'children': [
+               {'name': 'Date (earlier)', 'type':'str', 'value': t_earlier.isoformat()},
+               {'name': 'Date (later)', 'type':'str', 'value': "now"},
+               {'name': 'Query DB', 'type': 'action'}
+            ]},
+            {'name': 'Endpoint Select', 'type': 'group', 
+             'children': self.endpts_enabled
+            }]
+        self.p = Parameter.create(name='params', type='group', children=pt_initial)
+        self.pt = ParameterTree()
+        self.pt.setParameters(self.p, showTop=False)
         
-        # test save/restore
-        s = p.saveState()
-        p.restoreState(s)
+        # connect a simple function
+        self.p.sigTreeStateChanged.connect(self.tree_change)
 
-        # create a parameter tree widget
-        self.t = ParameterTree()
-        self.t.setParameters(p, showTop=False)
-        self.t.setWindowTitle('pyqtgraph example: Parameter Tree')
         
-        # create a RabbitPlot 
-        # self.rp = pg.PlotWidget(name="crap")
-        self.rp = RabbitPlot(["cage_pressure"], "2019-10-04T17:30", "now")
-        # self.rp.update_data()
-        # self.rp.show()
+        # ---- PLOTTING ----
         
+        # -- create a wabbit plot -- 
+        # pass our intitial list of endpoints to this
+        self.rp = RabbitPlot(self.endpts_enabled, t_earlier, t_later, self.cursor)
         
+        # reinitialize the plot when the user clicks the "Query DB" button.
+        # TODO: add a flag w/ functools partial to turn live update on/off
+        self.p.param('Run Query', 'Query DB').sigActivated.connect(self.rp.__init__)
         
-        # # make a second plot
-        # plot2 = pg.PlotWidget()
-        # plot2.plot(xv, yv, pen='g')
+        # could put a second plot with an independent parameter tree here,
+        # that listens to the same (or different?) rabbit queue.  
+
         
-        # set the layout of the widget
-        # NOTE: (widget, # y_row, x_row, y_span, x_span)
-        layout = QtGui.QGridLayout()
-        layout.setColumnStretch(2, 2)
-        layout.addWidget(self.t, 0, 0, 2, 1)
-        layout.addWidget(self.rp, 0, 2) 
-        # layout.addWidget(plot2, 1, 2)
+        # ---- LAYOUT ----
+        # https://doc.qt.io/archives/qt-4.8/qgridlayout.html#public-functions
+        # NOTE: addWidget(widget, fromRow, fromColumn, rowSpan, columnSpan)
+        layout = QGridLayout(self)
+        layout.setColumnStretch(0, 2) # stretch column 0 by 2
+        layout.setColumnStretch(1, 5) 
+        layout.addWidget(self.pt, 0, 0)
+        layout.addWidget(self.rp, 0, 1) 
+        # layout.addWidget(plot2, 2, 1, 2, 2)
         self.setLayout(layout)
+        
+        
+    def tree_change(self, param, changes):
+        """
+        print a message anytime something in the tree changes.
+        """
+        for param, change, data in changes:
+            path = self.p.childPath(param)
+            child_name = '.'.join(path) if path is not None else param.name()
+            print(f'  parameter: {child_name}')
+            print(f'  change:    {change}')
+            print(f'  data:      {str(data)}')
+            
+    
 
-
-# === RABBITMQ LISTENER (includes a live updating plot) ========================
+# === RABBITMQ LIVE DB PLOT ====================================================
 
 class RabbitPlot(pg.PlotWidget):
-    def __init__(self, endpoints, start=None, end=None):
+    def __init__(self, endpoints, t_earlier=None, t_later=None, db_cursor=None):
         super().__init__()
         self.show()
         
-        self.p1 = self.plot()
-        self.p1.setPen('g')
-        self.setLabel('left', "Value", units="V")
-        self.setLabel('bottom', "Time", units="s")
-        # self.p1.setLogMode(xMode=False, yMode=True)
+        self.n_days = 1
+        self.n_deque = 10000 # should add a check if one exceeds the other
+        self.cursor = db_cursor
         
         # declare endpoints of interest
-        self.endpoints = ["cage_pressure"]
-        self.start = "2019-10-04T17:30"
-        self.end = "now" 
+        self.endpoints = [ept['name'] for ept in endpoints if ept["value"]]
+        self.t_earlier = t_earlier
+        self.t_later = t_later
         
-        # set the initial values
-        self.yd = np.random.rand(10)
-        self.update_data()
+        # data for each endpoint goes into circular buffers (aka deques)
+        self.deques = {}
+        self.plots = {}
         
-    def update_data(self, xv=None, yv=None):
-        if yv is not None:
-            print("appending:", yv)
-            self.yd = np.append(self.yd, yv)
-        xd = np.arange(len(self.yd))
-        self.p1.setData(y=self.yd, x=xd)
+        # set up plot colors (0.0: black, 1.0: white)
+        colors = np.arange(0.2, 1.0, len(self.endpoints))
+        
+        # set up deques and plots
+        for i, ept in enumerate(self.endpoints):
+            self.deques[ept] = collections.deque([], maxlen=self.n_deque)
+            self.plots[ept] = self.plot()
+            # self.plots[ept] = self.plot(symbolBrush=(255,255,255), symbolPen='w')
+            self.plots[ept].setPen('g', width=3)
+        
+        self.setLabel('left', 'Value', units="arb. units")
+        self.setLabel('bottom', 'Time', units="sec")
 
+        # can we handle this from the UI?
+        # self.p1.setLogMode(xMode=False, yMode=True)
 
-class RabbitSignal(QObject):
-    # used by RabbitListener to communicate w/ the main loop (app.exec_())
-    # "if you want to define your own signals, they have to be class variables"
-    target = pyqtSignal(str, float) 
+        # run the initial DB query
+        self.query_db()
+        
+        
+    def query_db(self):
+        """
+        query DB for each endpoint, reset/fill the deques, and plot values.
+        """
+        for i, ept in enumerate(self.endpoints):
+            str_start = self.t_earlier.isoformat()
+            str_end = self.t_later.isoformat()
 
+            # build the query
+            query = f"SELECT value_cal, timestamp FROM numeric_data "
+            query += f"WHERE endpoint_name='{ept}' "
+            query += f"AND timestamp>='{str_start}' and timestamp<='{str_end}';"
+            
+            print("DB query is:")
+            print(query)
+            print("")
+            self.cursor.execute(query)
+            record = self.cursor.fetchall()
+            
+            # separate value and timestamp. pyqtgraph can't handle datetime objs
+            xv = np.array([r[1].timestamp() for r in record])
+            yv = np.array([r[0] for r in record])
+            self.t_offset = xv[0]
+            
+            # replace the entire data list with tuples: (value, timestamp)
+            self.deques[ept] = collections.deque(yv, maxlen=self.n_deque)
+            self.deques[ept + "_ts"] = collections.deque(xv, maxlen=self.n_deque)
+            
+            # show the plot in pyqtgraph
+            self.plots[ept].setData(y=yv, x = xv-self.t_offset)
+            
+            
+    def update_data(self, ept=None, xv=None, yv=None):
+        """
+        every time we get a new value from rabbit, update the plot
+        TODO: need to avoid re-copying the whole array
+        https://stackoverflow.com/questions/37079864/reading-live-data-using-pyqtgraph-without-appending-the-data
+        """
+        if ept in self.endpoints:
+            ts = xv.utcnow().timestamp()
+            
+            self.deques[ept].append(yv)
+            self.deques[ept+"_ts"].append(ts)
+            
+            # this array copy step is bad
+            self.plots[ept].setData(y=np.array(self.deques[ept]), 
+                                    x=np.array(self.deques[ept+"_ts"]))
+            
 
 class RabbitListener(QRunnable):
+    """
+    uses QRunnable's special 'run' function to start a separate thread with a 
+    pika connection that listens for all new messages posted to the DB.
+    """
     def __init__(self):
         super().__init__()
         self.signals = RabbitSignal()
@@ -240,9 +297,10 @@ class RabbitListener(QRunnable):
         self.channel.queue_declare(queue=self.config['queue'], 
                                    exclusive=True)
     
+        # listen to everything that gets posted (.# symbol)
         self.channel.queue_bind(exchange=self.config['exchange'],
                                 queue=self.config['queue'],
-                                routing_key="sensor_value.cage_pressure")
+                                routing_key="sensor_value.#")
 
         self.channel.basic_consume(queue=self.config['queue'], 
                                    on_message_callback=self.dispatch, 
@@ -252,14 +310,20 @@ class RabbitListener(QRunnable):
 
 
     def dispatch(self, channel, method, properties, body):
-        key = method.routing_key
+        endpt = method.routing_key.split(".")[-1] # split off "sensor_value."
         record = json.loads(body.decode()) # decode binary string to dict
-        print('got a record.  name:', key)
-        # pprint(record)
-        xv = record["timestamp"]
+        xv = parser.parse(record["timestamp"]) # convert to ISO string
         yv = record["payload"]["value_cal"]
-        self.signals.target.emit(xv, yv)
+        self.signals.target.emit(endpt, xv, yv)
     
+
+class RabbitSignal(QObject):
+    """
+    used by RabbitListener to communicate w/ the main loop (app.exec_())
+    "if you want to define your own signals, they have to be class variables"
+    """
+    target = pyqtSignal(str, datetime, float) 
+
 
 # === 
 
