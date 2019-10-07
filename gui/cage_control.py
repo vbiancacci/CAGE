@@ -89,7 +89,14 @@ class DBMonitor(QWidget):
     """
     DBMonitor is a grid of QWidgets, displayed in a tab of CAGEMonitor.
     Available data streams are "endpoints": mj60_baseline, cage_pressure, etc.
+    
     TODO: add moveable cross hairs, check the crosshair.py example
+    
+    TODO: multiple endpoint view.
+    since endpoints have different axes limits, let's make it s/t each box
+    that's checked in the parameter list gets its OWN plot, and the QGridLayout
+    is re-organized to fit more and more plots in column 1, every time the
+    user hits "Query DB".
     """
     def __init__(self):
         super().__init__()
