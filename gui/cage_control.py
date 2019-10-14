@@ -128,11 +128,11 @@ class DBMonitor(QWidget):
         for endpt in self.endpt_types:
             self.endpts_enabled.append({'name':endpt, 'type':'bool', 'value':False})
         
-        self.endpts_enabled[10]['value'] = True
+        self.endpts_enabled[1]['value'] = True
             
-        # default time window of 1 day
+        # default time window 
         t_later = datetime.utcnow()
-        t_earlier = datetime.utcnow() - timedelta(hours=4)
+        t_earlier = datetime.utcnow() - timedelta(hours=1)
         
         # create a parameter tree widget from the DB endpoints
         pt_initial = [
