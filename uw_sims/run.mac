@@ -7,10 +7,11 @@
 /g4simple/setReferencePhysList Shielding
 #/physics_engine/tailor/MuonNuclear on
 
-/g4simple/setDetectorGDML G4Geometry.gdml
+/g4simple/setDetectorGDML geometries/Plastic_Collimator.gdml
 
-
-/g4simple/setOutputFileName out.root
+/g4simple/setOutputFormat root
+/analysis/setFileName out
+#/g4simple/setOutputFileName out.root
 /g4simple/setVolID xtal_PV 1
 /g4simple/setVolID LAr_cryo_PV 2
 
@@ -37,5 +38,5 @@
 #/gps/energy 0.0 MeV
 #/gps/position 0 0 0 mm
 
-/run/beamOn 1
+/run/beamOn 1000
 

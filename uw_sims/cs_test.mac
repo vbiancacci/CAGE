@@ -8,10 +8,11 @@
 #/physics_engine/tailor/MuonNuclear on
 
 ##Geometry File to run simulation with
-/g4simple/setDetectorGDML gMJ60.gdml
+/g4simple/setDetectorGDML geometries/gMJ60.gdml
 
 ##Specify output file
-/g4simple/setOutputFormat hdf5
+/g4simple/setOutputFormat root
+#/g4simple/setOutputFormat hdf5
 /analysis/setFileName cs_test
 
 ##Set Volume ID's for Geometry Volumes (volume.in.geometry.file_PV volID)

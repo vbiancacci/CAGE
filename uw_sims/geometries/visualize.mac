@@ -1,7 +1,7 @@
 # use QGSP_BERT just to have something - this one loads fast.
 /g4simple/setReferencePhysList QGSP_BERT
 
-/g4simple/setDetectorGDML ../geometry/gMJ60.gdml false
+/g4simple/setDetectorGDML gMJ60.gdml false
 
 /run/initialize
 
