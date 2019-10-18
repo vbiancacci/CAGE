@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+ <define>
+
+  <constant name="HALFPI" value="pi/2."/>
+  <constant name="PI" value="1.*pi"/>
+  <constant name="TWOPI" value="2.*pi"/>
+
+
+  <quantity name="total_height" type="length" value="133.5"/>
+  <quantity name="cylinder_outer_height" type="length" value="108.1"/>
+  <quantity name="cylinder_inner_height" type="length" value="105.0"/>
+  <quantity name="ring_height" type="length" value="8.6" />
+  <quantity name="edge_height" type="length" value="1.3" />
+  <quantity name="pos_bottom_ring_fromTop" type="length" value="64.4"/>
+  <quantity name="pos_top_ring_fromTop" type="length" value="14.0" />
+ 
+  <quantity name="total_width" type="length" value="83.0" />
+  <quantity name="cylinder_outer_width" type="length" value="78.6" />
+  <quantity name="cylinder_inner_width" type="length" value="77.0" />
+
+
+  <quantity name="cylinder_height" type="length" value="cylinder_outer_height" unit="mm"/>
+  <quantity name="cylinder_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+
+  <quantity name="cavity_height" type="length" value="cylinder_inner_height" unit="mm"/>
+  <quantity name="cavity_radius" type="length" value="cylinder_inner_width/2" unit="mm"/>
+
+  <quantity name="ring_height" type="length" value="ring_height" unit="mm"/>
+  <quantity name="ring_maximum_radius" type="length" value="total_width/2" unit="mm"/>
+  <quantity name="ring_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+
+  <quantity name="edge_height" type="length" value="edge_height" unit="mm"/>
+  <quantity name="edge_maximum_radius" type="length" value="total_width/2" unit="mm"/>
+  <quantity name="edge_minimum_radius" type="length" value="cylinder_outer_width" unit="mm"/>
+
+
+  <position name="pos_cavity"  z="(cylinder_outer_width-cylinder_inner_width)/10" />  
+  <position name="pos_ring_bottom" z="(cylinder_outer_height-ring_height)/2-pos_bottom_ring" unit="mm"/>
+  <position name="pos_ring_top"  z="(cylinder_outer_height-ring_height)/2-pos_top_ring" unit="mm"/> 
+  <position name="pos_edge" z="(cylinder_outer_height-edge_height)/2" unit="mm"/> 
+  <position name="center" x="0" y="0" z="0"/>
+  
+  <rotation name="identity" x="0" y="0" z="0" />
+  <rotation name="initialisation"  x="90" unit="deg" />
+
+
+
+ </define>
+
+</xml>

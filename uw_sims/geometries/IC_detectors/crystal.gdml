@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+##########################################
+
+#cylinder_height = height of detector rest
+#cylinder_radius = outer radius of detector rest
+
+##########################################
+
+ <define>
+
+  <constant name="HALFPI" value="pi/2."/>
+  <constant name="PI" value="1.*pi"/>
+  <constant name="TWOPI" value="2.*pi"/>
+
+  <position name="center" x="0" y="0" z="0"/>
+  <position name="pos_groove_R" x="1.9/2" y="0" z="-4.04/2" unit="mm"/>  ####??? 
+  <position name="pos_groove_L" x="-1.9/2" y="0" z="-4.04/2" unit="mm"/>  ####??? 
+  <position name="union_position" unit="mm" z="4.02"/> ####?
+  <rotation name="identity" x="0" y="0" z="0" />
+  <rotation name="initialisation"  x="90" unit="deg" />
+
+  <quantity name="cone_height" type="length" value="40.0" unit="mm"/>
+  <quantity name="cone_minimum_radius" type="length" value="72.2/2" unit="mm"/>
+  <quantity name="cone_maximum_radius" type="length" value="74.7/2" unit="mm"/>
+  <quantity name="cone_inner_radius" type="length" value="10.5/2" unit="mm"/>
+
+  <quantity name="cylinder_height" type="length" value="40.4" unit="mm"/>
+  <quantity name="cylinder_radius" type="length" value="74.7/2" unit="mm"/>
+  
+  <quantity name="groove_height" type="length" value="2" unit="mm"/>
+  <quantity name="groove_radius" type="length" value="2" unit="mm"/>
+ 
+ </define>
+
+##########################################
+
+<materials>
+    <isotope name="Ge76" Z="32" N="76">
+      </isotope>
+      <isotope name="Ge36" Z="32" N="36">
+      </isotope>
+
+    <element name="enriched_germanium" >
+      <fraction ref="Ge76" n="0.9" />
+      <fraction ref="Ge36" n="0.1" />
+    </element>
+
+ </materials>
+
+##########################################
+
+ <solids>
+
+  <cone name="bottom" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  
+  <cone name="top_test" rmin1="cone_inner_radius" rmax1="cone_maximum_radius" rmin2="cone_inner_radius" rmax2="cone_minimum_radius" z="cone_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+  <cone name="groove_right" rmax1="groove_radius" rmax2="groove_radius" z="groove_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  <cone name="groove_left" rmax1="groove_radius" rmax2="groove_radius" z="groove_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+
+  <subtraction name="bottom_groove_right">
+   <first ref="bottom"/> <second ref="groove_right"/>
+   <positionref ref="pos_groove_L"/>
+  </subtraction>
+
+  <subtraction name="bottom_groove">
+   <first ref="bottom_groove_right"/> <second ref="groove_left"/>
+   <positionref ref="pos_groove_R"/>
+  </subtraction>
+
+
+  <union name="final">
+   <first ref="bottom_groove"/> <second ref="top_test"/>
+   <positionref ref="union_position"/>
+  </union>
+
+
+
+ </solids>
+
+##########################################
+
+ <structure>
+
+ <volume name="Crystal">
+   <materialref ref="enriched_germanium"/>
+   <solidref ref="final"/>
+   <rotationref ref="initialisation"/> 
+ </volume>
+
+ </structure>
+
+##########################################
+
+ <setup name="Default" version="1.0">
+  <world ref="Crystal"/>
+ </setup>
+</gdml>
+

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+	
+##########################################
+
+#cylinder_height = height of detector rest
+#cylinder_radius = outer radius of detector rest
+
+##########################################
+
+
+#define;
+
+
+
+ <define>
+
+  <constant name="HALFPI" value="pi/2."/>
+  <constant name="PI" value="1.*pi"/>
+  <constant name="TWOPI" value="2.*pi"/>
+
+
+  <quantity name="total_height" type="length" value="133.5"/>
+  <quantity name="cylinder_outer_height" type="length" value="108.1"/>
+  <quantity name="cylinder_inner_height" type="length" value="105.0"/>
+  <quantity name="ring_height" type="length" value="8.6" />
+  <quantity name="edge_height" type="length" value="1.3" />
+  <quantity name="pos_bottom_ring_fromTop" type="length" value="64.4"/>
+  <quantity name="pos_top_ring_fromTop" type="length" value="14.0" />
+
+  <quantity name="total_width" type="length" value="83.0" />
+  <quantity name="cylinder_outer_width" type="length" value="78.6" />
+  <quantity name="cylinder_inner_width" type="length" value="77.0" />
+
+
+  <quantity name="cylinder_height" type="length" value="cylinder_outer_height" unit="mm"/>
+  <quantity name="cylinder_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+
+  <quantity name="cavity_height" type="length" value="cylinder_inner_height" unit="mm"/>
+  <quantity name="cavity_radius" type="length" value="cylinder_inner_width/2" unit="mm"/>
+
+  <quantity name="ring_height" type="length" value="ring_height" unit="mm"/>
+  <quantity name="ring_maximum_radius" type="length" value="total_width/2" unit="mm"/>
+  <quantity name="ring_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+
+  <quantity name="edge_height" type="length" value="edge_height" unit="mm"/>
+  <quantity name="edge_maximum_radius" type="length" value="total_width/2" unit="mm"/>
+  <quantity name="edge_minimum_radius" type="length" value="cylinder_outer_width" unit="mm"/>
+
+  <position name="pos_cavity"  z="(cylinder_outer_width-cylinder_inner_width)/10" />
+  <position name="pos_ring_bottom" z="(cylinder_outer_height-ring_height)/2-pos_bottom_ring" unit="mm"/>
+  <position name="pos_ring_top"  z="(cylinder_outer_height-ring_height)/2-pos_top_ring" unit="mm"/>
+  <position name="pos_edge" z="(cylinder_outer_height-edge_height)/2" unit="mm"/>
+  <position name="center" x="0" y="0" z="0"/>
+
+  <rotation name="identity" x="0" y="0" z="0" />
+  <rotation name="initialisation"  x="90" unit="deg" />
+
+ </define>
+
+
+##########################################
+
+ <materials>
+	<material name="Al" Z="13.0" >
+	 <D value="2.70" unit="g/cm3" />
+	 <atom value="26.98" />
+	</material>
+
+ </materials>
+
+##########################################
+
+ <solids>
+
+  <cone name="cylinder" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  <cone name="cavity" rmax1="cavity_radius" rmax2="cavity_radius" z="cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+  <cone name="ring" rmin1="ring_minimum_radius" rmax1="ring_maximum_radius"  rmin2="ring_minimum_radius" rmax2="ring_maximum_radius" z="ring_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+  <cone name="edge" rmin1="edge_minimum_radius" rmax1="edge_maximum_radius"  rmin2="edge_minimum_radius" rmax2="edge_maximum_radius" z="edge_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+  <subtraction name="base">
+   <first ref="cylinder"/> <second ref="cavity"/>
+   <positionref ref="pos_cavity"/>
+  </subtraction>
+
+  <union name="base_ring_bottom">
+   <first ref="base"/> <second ref="ring"/>
+   <positionref ref="pos_ring_bottom"/>
+  </union>
+  
+  <union name="base_ring">
+   <first ref="base_ring_bottom"/> <second ref="ring"/>
+   <positionref ref="pos_ring_top"/>
+  </union>
+  
+  <union name="final">
+   <first ref="base_ring"/> <second ref="edge"/>
+   <positionref ref="pos_edge"/>
+  </union>
+  
+  <multiUnion name="final2" >
+   <multiUnionNode name="node-1">
+   <solid ref="base" />
+   </multiUnionNode>
+   <multiUnionNode name="node-2">
+   <solid ref="ring" />
+   <positionref ref="pos_ring_bottom" />
+   </multiUnionNode>
+   <multiUnionNode name="node-3">
+   <solid ref="ring" />
+   <positionref ref="pos_ring_top" />
+   </multiUnionNode>
+   <multiUnionNode name="node-4">
+   <solid ref="edge" />
+   <positionref ref="pos_edge" />
+   </multiUnionNode>
+  </multiUnion>
+
+ </solids>
+
+##########################################
+
+ <structure>
+
+ <volume name="Holder">
+   <materialref ref="Al"/>
+   <solidref ref="cylinder"/>
+   <rotationref ref="initialisation"/> 
+ </volume>
+
+ </structure>
+
+##########################################
+
+ <setup name="Default" version="1.0">
+  <world ref="Holder"/>
+ </setup>
+</gdml>
+
