@@ -78,8 +78,8 @@ class CAGEMonitor(QMainWindow):
         # st2 = QWidget() # blank
         # tabs.addTab(st2,"Motor Controller")
         
-        # tab 3 -- MJ60 DB monitor?
-        # also need an HV biasing & interlock widget
+        # tab 3 -- detector / DB control.  dragonfly reporting, interlock status, etc.
+        # also would like an HV biasing (auto-ramp) & interlock status widget
 
         self.setCentralWidget(tabs)
         self.show()
@@ -128,11 +128,11 @@ class DBMonitor(QWidget):
         for endpt in self.endpt_types:
             self.endpts_enabled.append({'name':endpt, 'type':'bool', 'value':False})
         
-        self.endpts_enabled[1]['value'] = True
+        self.endpts_enabled[2]['value'] = True
             
         # default time window 
         t_later = datetime.utcnow()
-        t_earlier = datetime.utcnow() - timedelta(hours=1)
+        t_earlier = datetime.utcnow() - timedelta(hours=2)
         
         # create a parameter tree widget from the DB endpoints
         pt_initial = [
@@ -297,19 +297,20 @@ class RabbitListener(QRunnable):
         self.cpars = pika.ConnectionParameters(host=self.config['cage_daq'])
         self.conn = pika.BlockingConnection(self.cpars)
         self.channel = self.conn.channel()
+        self.queue_name = f"cage_{np.random.randint(1)}" # allow multiple users
 
         self.channel.exchange_declare(exchange=self.config["exchange"], 
                                       exchange_type='topic')
         
-        self.channel.queue_declare(queue=self.config['queue'], 
+        self.channel.queue_declare(queue=self.queue_name, 
                                    exclusive=True)
     
         # listen to everything that gets posted (.# symbol)
         self.channel.queue_bind(exchange=self.config['exchange'],
-                                queue=self.config['queue'],
+                                queue=self.queue_name,
                                 routing_key="sensor_value.#")
 
-        self.channel.basic_consume(queue=self.config['queue'], 
+        self.channel.basic_consume(queue=self.queue_name, 
                                    on_message_callback=self.dispatch, 
                                    auto_ack=True)
 
