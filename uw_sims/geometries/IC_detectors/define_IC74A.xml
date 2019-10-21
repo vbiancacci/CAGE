@@ -1,4 +1,6 @@
 
+###IC74A
+
 
   <constant name="HALFPI" value="pi/2."/>
   <constant name="PI" value="1.*pi"/>
@@ -10,14 +12,16 @@
   <rotation name="initialisation"  x="90" unit="deg" />
   
   
-######## CRYSTAL ################
+#############
+  CRYSTAL
+#############
 
-  <constant name="crystal_height" type="length" value="80.4" />
-  <constant name="top_height" type="length" value="40.0" />
+  <constant name="crystal_height" type="length" value="82.3" />
+  <constant name="top_height" type="length" value="52.4" />
   <constant name="grooves_height" type="length" value="2.0" />
 
-  <constant name="crystal_width" type="length" value="74.7" />
-  <constant name="top_width" type="length" value="72.2" />
+  <constant name="crystal_width" type="length" value="76.6" />
+  <constant name="top_width" type="length" value="76.6" />
   <constant name="cavity_width" type="length" value="10.5" />
   <constant name="grooves_inner_width" type="length" value="19.0" />
   <constant name="grooves_outer_width" type="length" value="27.0" />
@@ -25,7 +29,9 @@
 
 
 
-######## HOLDER ################
+#############
+  HOLDER
+#############
 
   <constant name="holder_height" type="length" value="133.5"/>
   <constant name="cylinder_outer_height" type="length" value="108.1"/>
@@ -35,12 +41,9 @@
   <constant name="pos_bottom_ring_fromTop" type="length" value="64.4"/>
   <constant name="pos_top_ring_fromTop" type="length" value="14.0" />
  
-  <constant name="holder_width" type="length" value="83.0" />
-  <constant name="cylinder_outer_width" type="length" value="78.6" />
-  <constant name="cylinder_inner_width" type="length" value="77.0" />
+  <constant name="holder_width" type="length" value="85.0" />
+  <constant name="cylinder_outer_width" type="length" value="80.6" />
+  <constant name="cylinder_inner_width" type="length" value="79.0" />
 
-
-
-####### ASSEMBLY ################
 
 

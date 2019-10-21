@@ -1,3 +1,6 @@
+
+###IC48A
+  
   <constant name="PI" value="1.*pi"/>
   <constant name="TWOPI" value="2.*pi"/>
 
@@ -7,7 +10,10 @@
   <rotation name="initialisation"  x="90" unit="deg" />
   
   
-######## CRYSTAL ################
+#############
+  CRYSTAL
+#############
+
 
   <constant name="crystal_height" type="length" value="80.4" />
   <constant name="top_height" type="length" value="47.4" />
@@ -22,7 +28,9 @@
 
 
 
-######## HOLDER ################
+#############
+  HOLDER
+#############
 
   <constant name="holder_height" type="length" value="133.5"/>
   <constant name="cylinder_outer_height" type="length" value="108.1"/>
