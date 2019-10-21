@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 ##########################################
@@ -10,28 +20,34 @@
 
  <define>
 
-  <constant name="HALFPI" value="pi/2."/>
-  <constant name="PI" value="1.*pi"/>
-  <constant name="TWOPI" value="2.*pi"/>
 
+ &define_IC50A;
+ <!--
+ &define_IC48A;
+ &define_IC48A;
+ &define_IC48A;
+ &define_IC48A;
+ -->
+
+
+  <quantity name="cylinder_height" type="length" value="crystal_height-top_height" unit="mm"/>
+  <quantity name="cylinder_radius" type="length" value="crystal_width/2" unit="mm"/>
+  
+  <quantity name="cone_height" type="length" value="top_height" unit="mm"/>
+  <quantity name="cone_minimum_radius" type="length" value="top_width/2" unit="mm"/>
+  <quantity name="cone_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
+  <quantity name="cone_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
+  
+  <quantity name="grooves_height" type="length" value="grooves_height" unit="mm"/>
+  <quantity name="grooves_minimum_radius" type="length" value="grooves_inner_width/2" unit="mm"/>
+  <quantity name="grooves_maximum_radius" type="length" value="grooves_outer_width/2" unit="mm"/>
+ 
   <position name="center" x="0" y="0" z="0"/>
-  <position name="pos_groove_R" x="1.9/2" y="0" z="-4.04/2" unit="mm"/>  ####??? 
-  <position name="pos_groove_L" x="-1.9/2" y="0" z="-4.04/2" unit="mm"/>  ####??? 
-  <position name="union_position" unit="mm" z="4.02"/> ####?
+  <position name="pos_grooves" z="-4.04/2" />  ####???
+  <position name="union_position" unit="mm" z="4.02"/> ####? 
   <rotation name="identity" x="0" y="0" z="0" />
   <rotation name="initialisation"  x="90" unit="deg" />
 
-  <quantity name="cone_height" type="length" value="40.0" unit="mm"/>
-  <quantity name="cone_minimum_radius" type="length" value="72.2/2" unit="mm"/>
-  <quantity name="cone_maximum_radius" type="length" value="74.7/2" unit="mm"/>
-  <quantity name="cone_inner_radius" type="length" value="10.5/2" unit="mm"/>
-
-  <quantity name="cylinder_height" type="length" value="40.4" unit="mm"/>
-  <quantity name="cylinder_radius" type="length" value="74.7/2" unit="mm"/>
-  
-  <quantity name="groove_height" type="length" value="2" unit="mm"/>
-  <quantity name="groove_radius" type="length" value="2" unit="mm"/>
- 
  </define>
 
 ##########################################
@@ -55,25 +71,18 @@
 
   <cone name="bottom" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
   
-  <cone name="top_test" rmin1="cone_inner_radius" rmax1="cone_maximum_radius" rmin2="cone_inner_radius" rmax2="cone_minimum_radius" z="cone_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  <cone name="top" rmin1="cone_inner_radius" rmax1="cone_maximum_radius" rmin2="cone_inner_radius" rmax2="cone_minimum_radius" z="cone_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  <cone name="groove_right" rmax1="groove_radius" rmax2="groove_radius" z="groove_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-  <cone name="groove_left" rmax1="groove_radius" rmax2="groove_radius" z="groove_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  <cone name="grooves" rmin1="grooves_minimum_radius" rmax1="grooves_maximum_radius" rmin2="grooves_minimum_radius"  rmax2="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-
-  <subtraction name="bottom_groove_right">
-   <first ref="bottom"/> <second ref="groove_right"/>
-   <positionref ref="pos_groove_L"/>
-  </subtraction>
-
-  <subtraction name="bottom_groove">
-   <first ref="bottom_groove_right"/> <second ref="groove_left"/>
-   <positionref ref="pos_groove_R"/>
+  <subtraction name="bottom_grooves">
+   <first ref="bottom"/> <second ref="grooves"/>
+   <positionref ref="pos_grooves"/>
   </subtraction>
 
 
   <union name="final">
-   <first ref="bottom_groove"/> <second ref="top_test"/>
+   <first ref="bottom_grooves"/> <second ref="top"/>
    <positionref ref="union_position"/>
   </union>
 
