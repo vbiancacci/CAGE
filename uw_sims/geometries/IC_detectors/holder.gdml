@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_IC48A SYSTEM "define_IC48A.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
 ]>
 <!--
 <!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
@@ -21,7 +21,7 @@
 
  <define>
 
-  &define_IC48A;
+  &define_IC50A;
   <!--
   &define_IC48A;
   &define_IC48A;
@@ -41,11 +41,11 @@
 
   <quantity name="edge_height" type="length" value="edge_height" unit="mm"/>
   <quantity name="edge_maximum_radius" type="length" value="holder_width/2" unit="mm"/>
-  <quantity name="edge_minimum_radius" type="length" value="cylinder_outer_width" unit="mm"/>
+  <quantity name="edge_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
 
   <position name="pos_cavity"  z="(cylinder_outer_width-cylinder_inner_width)/10" />
-  <position name="pos_ring_bottom" z="(-(cylinder_outer_height-ring_height)/2-pos_bottom_ring)/10" />
-  <position name="pos_ring_top"  z="((cylinder_outer_height-ring_height)/2-pos_top_ring)/10" />
+  <position name="pos_ring_bottom" z="((cylinder_outer_height-ring_height)/2-pos_bottom_ring_fromTop)/10" />
+  <position name="pos_ring_top"  z="((cylinder_outer_height-ring_height)/2-pos_top_ring_fromTop)/10" />
   <position name="pos_edge" z="((cylinder_outer_height-edge_height)/2)/10"/>
   <position name="center" x="0" y="0" z="0"/>
 

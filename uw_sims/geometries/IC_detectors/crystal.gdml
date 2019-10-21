@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
 ]>
 <!--
 <!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
@@ -21,7 +21,7 @@
  <define>
 
 
- &define_IC48B;
+ &define_IC50A;
  <!--
  &define_IC48A;
  &define_IC48B;
