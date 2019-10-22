@@ -45,3 +45,12 @@
   <constant name="cylinder_inner_width" type="length" value="77.0" />
 
 
+#############
+ ASSEMBLY 
+#############
+
+  <constant name="assembly_height" type="length" value="170.0"/> 
+  <constant name="assembly_cavity_height" type="length" value="168.5"/> 
+
+  <constant name="assembly_width" type="length" value="101.6"/> 
+  <constant name="assembly_cavity_width" type="length" value="98.6"/> 

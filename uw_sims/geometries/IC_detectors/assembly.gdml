@@ -39,7 +39,6 @@
  
   <position name="center" x="0" y="0" z="0"/>
   <position name="pos_assembly_cavity" z="0.15" />  ####???
-  <position name="pos_holder" z="0" />  ####???
   <rotation name="identity" x="0" y="0" z="0" />
   <rotation name="initialisation"  x="90" unit="deg" />
 

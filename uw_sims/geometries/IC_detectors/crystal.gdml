@@ -28,21 +28,22 @@
  -->
 
 
-  <quantity name="cylinder_height" type="length" value="crystal_height-top_height" unit="mm"/>
-  <quantity name="cylinder_radius" type="length" value="crystal_width/2" unit="mm"/>
+  <quantity name="bottom_height" type="length" value="crystal_height-top_height" unit="mm"/>
+  <quantity name="bottom_radius" type="length" value="crystal_width/2" unit="mm"/>
   
-  <quantity name="cone_height" type="length" value="top_height" unit="mm"/>
-  <quantity name="cone_minimum_radius" type="length" value="top_width/2" unit="mm"/>
-  <quantity name="cone_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
-  <quantity name="cone_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
+  <quantity name="top_height" type="length" value="top_height" unit="mm"/>
+  <quantity name="top_minimum_radius" type="length" value="top_width/2" unit="mm"/>
+  <quantity name="top_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
+  <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
   
   <quantity name="grooves_height" type="length" value="grooves_height" unit="mm"/>
   <quantity name="grooves_minimum_radius" type="length" value="grooves_inner_width/2" unit="mm"/>
   <quantity name="grooves_maximum_radius" type="length" value="grooves_outer_width/2" unit="mm"/>
  
-  <position name="center" x="0" y="0" z="0"/>
   <position name="pos_grooves" z="-4.04/2" />  ####???
-  <position name="union_position" unit="mm" z="4.02"/> ####? 
+  <position name="pos_union" unit="mm" z="4.02"/> ####? 
+ 
+  <position name="center" x="0" y="0" z="0"/>
   <rotation name="identity" x="0" y="0" z="0" />
   <rotation name="initialisation"  x="90" unit="deg" />
 
@@ -66,9 +67,9 @@
 ##########################################
 
  <solids>
-	 <cone name="bottom" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <cone name="bottom" rmax1="bottom_radius"  rmax2="bottom_radius" z="bottom_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
   
-  	 <cone name="top" rmin1="cone_inner_radius" rmax1="cone_maximum_radius" rmin2="cone_inner_radius" rmax2="cone_minimum_radius" z="cone_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
   	 <cone name="grooves" rmin1="grooves_minimum_radius" rmax1="grooves_maximum_radius" rmin2="grooves_minimum_radius"  rmax2="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
@@ -79,7 +80,7 @@
 	 
 	 <union name="final">
 		 <first ref="bottom_grooves"/> <second ref="top"/>
-		 <positionref ref="union_position"/>
+		 <positionref ref="pos_union"/>
 	 </union>
  </solids>
 
@@ -89,7 +90,6 @@
 	 <volume name="Crystal">
 		 <materialref ref="enriched_germanium"/>
 		 <solidref ref="final"/>
-		 <rotationref ref="initialisation"/> 
 	 </volume>
  </structure>
 
