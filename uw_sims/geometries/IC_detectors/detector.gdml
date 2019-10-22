@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+#########################################	
+ <define>
+	 <position name="pos_crystal" z="1.8" />
+	 <position name="pos_holder" z="2.5" />
+	 <position name="pos_assembly" z="0.0" />
+ </define>
+
+
+##########################################
+
+ <materials>
+	 <element Z="7" formula="N" name="Nitrogen" >
+		 <atom value="14.01" />
+	 </element>
+	 <element Z="8" formula="O" name="Oxygen" >
+		 <atom value="16" />
+	 </element>
+
+	 <material name="Air" >
+		 <D value="0.00128" />
+		 <fraction n="0.7" ref="Nitrogen" />
+		 <fraction n="0.3" ref="Oxygen" />
+	 </material>
+	 
+	 
+	 <material name="Vacuum" >
+		 <D value="1.0e-25" unit="g/cm3"/>
+	 </material>
+ </materials>
+
+##########################################
+
+ <solids>
+	 <box name="world" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
+ </solids>
+
+##########################################
+
+ <structure>
+	 <volume name="World">
+		 <solidref ref="world"/>
+		 <materialref ref="Vacuum"/>
+		 <physvol>
+			 <file name="crystal.gdml"/>
+			 <positionref ref="pos_crystal"/>
+		 </physvol>
+		 <physvol>
+			 <file name="holder.gdml"/>
+			 <positionref ref="pos_holder"/>
+		 </physvol>
+		 <physvol>
+			 <file name="assembly.gdml"/>
+			 <positionref ref="pos_assembly"/>
+		 </physvol>
+	 </volume>
+ </structure>
+
+##########################################
+
+ <setup name="Default" version="1.0">
+	 <world ref="World"/>
+ </setup>
+</gdml>
+

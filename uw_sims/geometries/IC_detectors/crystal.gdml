@@ -19,9 +19,7 @@
 ##########################################
 
  <define>
-
-
- &define_IC50A;
+	 &define_IC50A;
  <!--
  &define_IC48A;
  &define_IC48B;
@@ -52,60 +50,54 @@
 
 ##########################################
 
-<materials>
-    <isotope name="Ge76" Z="32" N="76">
-      </isotope>
-      <isotope name="Ge36" Z="32" N="36">
-      </isotope>
-
-    <element name="enriched_germanium" >
-      <fraction ref="Ge76" n="0.9" />
-      <fraction ref="Ge36" n="0.1" />
-    </element>
-
+ <materials>
+	 <isotope name="Ge76" Z="32" N="76">
+	 </isotope>
+	 <isotope name="Ge36" Z="32" N="36">
+	 </isotope>
+	 
+	 <element name="enriched_germanium" >
+		 <D value="5.323" unit="mg/cm3"/>
+		 <fraction ref="Ge76" n="0.9" />
+		 <fraction ref="Ge36" n="0.1" />
+	 </element>
  </materials>
 
 ##########################################
 
  <solids>
-
-  <cone name="bottom" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <cone name="bottom" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
   
-  <cone name="top" rmin1="cone_inner_radius" rmax1="cone_maximum_radius" rmin2="cone_inner_radius" rmax2="cone_minimum_radius" z="cone_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <cone name="top" rmin1="cone_inner_radius" rmax1="cone_maximum_radius" rmin2="cone_inner_radius" rmax2="cone_minimum_radius" z="cone_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  <cone name="grooves" rmin1="grooves_minimum_radius" rmax1="grooves_maximum_radius" rmin2="grooves_minimum_radius"  rmax2="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <cone name="grooves" rmin1="grooves_minimum_radius" rmax1="grooves_maximum_radius" rmin2="grooves_minimum_radius"  rmax2="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  <subtraction name="bottom_grooves">
-   <first ref="bottom"/> <second ref="grooves"/>
-   <positionref ref="pos_grooves"/>
-  </subtraction>
-
-
-  <union name="final">
-   <first ref="bottom_grooves"/> <second ref="top"/>
-   <positionref ref="union_position"/>
-  </union>
-
-
-
+  	 <subtraction name="bottom_grooves">
+		 <first ref="bottom"/> <second ref="grooves"/>
+		 <positionref ref="pos_grooves"/>
+	 </subtraction>
+	 
+	 <union name="final">
+		 <first ref="bottom_grooves"/> <second ref="top"/>
+		 <positionref ref="union_position"/>
+	 </union>
  </solids>
 
 ##########################################
 
  <structure>
-
- <volume name="Crystal">
-   <materialref ref="enriched_germanium"/>
-   <solidref ref="final"/>
-   <rotationref ref="initialisation"/> 
- </volume>
-
+	 <volume name="Crystal">
+		 <materialref ref="enriched_germanium"/>
+		 <solidref ref="final"/>
+		 <rotationref ref="initialisation"/> 
+	 </volume>
  </structure>
 
 ##########################################
 
  <setup name="Default" version="1.0">
-  <world ref="Crystal"/>
+	 <world ref="Crystal"/>
  </setup>
+
 </gdml>
 

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+##########################################
+
+#cylinder_height = height of detector rest
+#cylinder_radius = outer radius of detector rest
+
+##########################################
+
+ <define>
+
+
+ &define_IC50A;
+ <!--
+ &define_IC48A;
+ &define_IC48B;
+ &define_IC50B;
+ &define_IC74A;
+ -->
+
+
+  <quantity name="assembly_height" type="length" value="assembly_height" unit="mm"/>
+  <quantity name="assembly_radius" type="length" value="assembly_width/2" unit="mm"/>
+  
+  <quantity name="assembly_cavity_height" type="length" value="assembly_cavity_height" unit="mm"/>
+  <quantity name="assembly_cavity_radius" type="length" value="assembly_cavity_width/2" unit="mm"/>
+  
+ 
+  <position name="center" x="0" y="0" z="0"/>
+  <position name="pos_assembly_cavity" z="0.15" />  ####???
+  <position name="pos_holder" z="0" />  ####???
+  <rotation name="identity" x="0" y="0" z="0" />
+  <rotation name="initialisation"  x="90" unit="deg" />
+
+ </define>
+
+##########################################
+ <materials>
+        <material name="Al" Z="13.0" >
+         <D value="2.70" unit="g/cm3" />
+         <atom value="26.98" />
+        </material>
+
+ </materials>
+
+##########################################
+
+ <solids>
+	 <cone name="assembly" rmax1="assembly_radius"  rmax2="assembly_radius" z="assembly_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <cone name="assembly_cavity" rmax1="assembly_cavity_radius"  rmax2="assembly_cavity_radius" z="assembly_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 
+	 <subtraction name="final_assembly">
+		 <first ref="assembly"/> <second ref="assembly_cavity"/>
+		 <positionref ref="pos_assembly_cavity"/>
+	 </subtraction>
+ </solids>
+
+##########################################
+
+ <structure>
+	 <volume name="Assembly">
+		 <materialref ref="Al"/>
+		 <solidref ref="final_assembly"/>
+	 </volume>
+ </structure>
+
+##########################################
+
+ <setup name="Default" version="1.0">
+	 <world ref="Assembly"/>
+ </setup>
+
+</gdml>
+
