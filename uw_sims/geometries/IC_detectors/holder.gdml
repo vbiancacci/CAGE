@@ -74,15 +74,15 @@
 ##########################################
 
  <solids>
-	 <cone name="cylinder" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 <cone name="bottom_cylinder" rmax1="bottom_cylinder_radius"  rmax2="bottom_cylinder_radius" z="bottom_cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="cylinder" rmax="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="bottom_cylinder" rmax="bottom_cylinder_radius" z="bottom_cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 	 
-	 <cone name="cavity" rmax1="cavity_radius" rmax2="cavity_radius" z="cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-  	 <cone name="bottom_cavity" rmax1="bottom_cavity_radius" rmax2="bottom_cavity_radius" z="bottom_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="cavity" rmax="cavity_radius" z="cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="bottom_cavity" rmax="bottom_cavity_radius" z="bottom_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <cone name="ring" rmin1="ring_minimum_radius" rmax1="ring_maximum_radius"  rmin2="ring_minimum_radius" rmax2="ring_maximum_radius" z="ring_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="ring" rmin="ring_minimum_radius" rmax="ring_maximum_radius" z="ring_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <cone name="edge" rmin1="edge_minimum_radius" rmax1="edge_maximum_radius"  rmin2="edge_minimum_radius" rmax2="edge_maximum_radius" z="edge_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="edge" rmin="edge_minimum_radius" rmax="edge_maximum_radius" z="edge_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
 
   	 <union name="total_cylinder">
@@ -110,7 +110,7 @@
 		 <positionref ref="pos_ring_top"/>
 	 </union>
 	 
-	 <union name="final">
+	 <union name="final_holder">
 		 <first ref="base_ring"/> <second ref="edge"/>
 		 <positionref ref="pos_edge"/>
 	 </union>
@@ -140,7 +140,7 @@
  <structure>
 	 <volume name="Holder">
 		 <materialref ref="Al"/>
-		 <solidref ref="final"/>
+		 <solidref ref="final_holder"/>
 	 </volume>
  </structure>
 

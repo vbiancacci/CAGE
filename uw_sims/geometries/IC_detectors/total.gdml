@@ -104,11 +104,11 @@
 	 <isotope name="Ge36" Z="32" N="36">
 	 </isotope>
 	 
-	 <element name="enriched_germanium" >
+	 <material name="enriched_germanium" >
 		 <D value="5.323" unit="mg/cm3"/>
 		 <fraction ref="Ge76" n="0.9" />
 		 <fraction ref="Ge36" n="0.1" />
-	 </element>
+	 </material>
 
 	 <material name="Al" Z="13.0" >
 		 <D value="2.70" unit="g/cm3" />
@@ -142,11 +142,11 @@
 
 ###crystal
 
-	 <cone name="bottom" rmax1="bottom_radius"  rmax2="bottom_radius" z="bottom_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="bottom" rmax="bottom_radius" z="bottom_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
   
   	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <cone name="grooves" rmin1="grooves_minimum_radius" rmax1="grooves_maximum_radius" rmin2="grooves_minimum_radius"  rmax2="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
   	 <subtraction name="bottom_grooves">
 		 <first ref="bottom"/> <second ref="grooves"/>
@@ -161,15 +161,15 @@
 
 ###holder
 
-	 <cone name="cylinder" rmax1="cylinder_radius"  rmax2="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 <cone name="bottom_cylinder" rmax1="bottom_cylinder_radius"  rmax2="bottom_cylinder_radius" z="bottom_cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="cylinder" rmax="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="bottom_cylinder" rmax="bottom_cylinder_radius" z="bottom_cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 	 
-	 <cone name="cavity" rmax1="cavity_radius" rmax2="cavity_radius" z="cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-  	 <cone name="bottom_cavity" rmax1="bottom_cavity_radius" rmax2="bottom_cavity_radius" z="bottom_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="cavity" rmax="cavity_radius" z="cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="bottom_cavity" rmax="bottom_cavity_radius" z="bottom_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <cone name="ring" rmin1="ring_minimum_radius" rmax1="ring_maximum_radius"  rmin2="ring_minimum_radius" rmax2="ring_maximum_radius" z="ring_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="ring" rmin="ring_minimum_radius" rmax="ring_maximum_radius"z="ring_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <cone name="edge" rmin1="edge_minimum_radius" rmax1="edge_maximum_radius"  rmin2="edge_minimum_radius" rmax2="edge_maximum_radius" z="edge_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="edge" rmin="edge_minimum_radius" rmax="edge_maximum_radius" z="edge_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
 
   	 <union name="total_cylinder">
@@ -223,8 +223,8 @@
 
 ###assembly
 
-	 <cone name="assembly" rmax1="assembly_radius"  rmax2="assembly_radius" z="assembly_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 <cone name="assembly_cavity" rmax1="assembly_cavity_radius"  rmax2="assembly_cavity_radius" z="assembly_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="assembly" rmax="assembly_radius" z="assembly_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="assembly_cavity" rmax="assembly_cavity_radius" z="assembly_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 	 
 	 <subtraction name="final_assembly">
 		 <first ref="assembly"/> <second ref="assembly_cavity"/>

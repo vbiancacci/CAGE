@@ -57,28 +57,28 @@
 	 <isotope name="Ge36" Z="32" N="36">
 	 </isotope>
 	 
-	 <element name="enriched_germanium" >
+	 <material name="enriched_germanium" >
 		 <D value="5.323" unit="mg/cm3"/>
 		 <fraction ref="Ge76" n="0.9" />
 		 <fraction ref="Ge36" n="0.1" />
-	 </element>
+	 </material>
  </materials>
 
 ##########################################
 
  <solids>
-	 <cone name="bottom" rmax1="bottom_radius"  rmax2="bottom_radius" z="bottom_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="bottom" rmax="bottom_radius" z="bottom_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
   
   	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <cone name="grooves" rmin1="grooves_minimum_radius" rmax1="grooves_maximum_radius" rmin2="grooves_minimum_radius"  rmax2="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius"  z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
   	 <subtraction name="bottom_grooves">
 		 <first ref="bottom"/> <second ref="grooves"/>
 		 <positionref ref="pos_grooves"/>
 	 </subtraction>
 	 
-	 <union name="final">
+	 <union name="final_crystal">
 		 <first ref="bottom_grooves"/> <second ref="top"/>
 		 <positionref ref="pos_union"/>
 	 </union>
@@ -89,7 +89,7 @@
  <structure>
 	 <volume name="Crystal">
 		 <materialref ref="enriched_germanium"/>
-		 <solidref ref="final"/>
+		 <solidref ref="final_crystal"/>
 	 </volume>
  </structure>
 

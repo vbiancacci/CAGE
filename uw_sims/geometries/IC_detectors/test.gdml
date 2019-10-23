@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+	 <position name="pos_tube" x="10" y="0" z="0" />
+	 <position name="pos_box" x="0" y="0" z="0"/>
+	 
+	 <rotation name="rot_tube1" x="pi" y="0" z="0"/>
+	 <rotation name="rot_tube2" deltaphi="pi" />
+
+ </define>
+
+##########################################
+
+ <materials>
+	 <isotope name="Ge76" Z="32" N="76">
+	 </isotope>
+	 <isotope name="Ge36" Z="32" N="36">
+	 </isotope>
+	 
+	 <material name="enriched_germanium" >
+		 <D value="5.323" unit="mg/cm3"/>
+		 <fraction ref="Ge76" n="0.9" />
+		 <fraction ref="Ge36" n="0.1" />
+	 </material>
+
+	  <material Z="7" formula="N" name="Nitrogen" >
+                 <atom value="14.01" />
+         </material>
+
+ </materials>
+
+##########################################
+
+ <solids>
+	 <box name="world" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
+
+	 <tube name="tube1" z="300.0" rmax="50.0" rmin="20.0" unit="mm" deltaphi="2*pi" />
+	 <tube name="tube2" z="300.0" rmax="20.0" unit="mm" deltaphi="2*pi" />
+  
+	 <box name="box1" x="100.0" y="100.0" z="100.0" unit="mm" />
+
+<!--
+  	 <subtraction name="bottom_grooves">
+		 <first ref="bottom"/> <second ref="grooves"/>
+		 <positionref ref="pos_grooves"/>
+	 </subtraction>
+	 
+	 <union name="final">
+		 <first ref="bottom_grooves"/> <second ref="top"/>
+		 <positionref ref="pos_union"/>
+	 </union>  -->
+ </solids>
+
+##########################################
+ <structure>
+         <volume name="Tube1">
+                 <solidref ref="tube1"/>
+                 <materialref ref="enriched_germanium"/>
+         </volume>
+         <volume name="Tube2">
+                 <solidref ref="tube2"/>
+                 <materialref ref="enriched_germanium"/>
+         </volume>
+         <volume name="Box">
+                 <solidref ref="box1"/>
+                 <materialref ref="enriched_germanium"/>
+	 </volume>  
+
+         <volume name="World">
+                 <solidref ref="world"/>
+                 <materialref ref="Nitrogen"/>
+                 <physvol>
+                         <volumeref ref="Tube1"/>
+                         <positionref ref="pos_tube"/>
+                         <rotationref ref="rot_tube1"/>
+                 </physvol>
+<!--                 <physvol>
+                         <volumeref ref="Tube2"/>
+                         <positionref ref="pos_tube"/>
+                         <rotationref ref="rot_tube2"/>
+		 </physvol> -->
+                 <physvol>
+                         <volumeref ref="Box"/>
+                         <positionref ref="pos_box"/>
+                 </physvol>
+         </volume>
+ </structure>
+
+##########################################
+
+ <setup name="Default" version="1.0">
+	 <world ref="Tube1"/>
+ </setup>
+
+</gdml>
+

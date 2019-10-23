@@ -56,8 +56,8 @@
 ##########################################
 
  <solids>
-	 <cone name="assembly" rmax1="assembly_radius"  rmax2="assembly_radius" z="assembly_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 <cone name="assembly_cavity" rmax1="assembly_cavity_radius"  rmax2="assembly_cavity_radius" z="assembly_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="assembly" rmax="assembly_radius"  z="assembly_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="assembly_cavity" rmax="assembly_cavity_radius" z="assembly_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 	 
 	 <subtraction name="final_assembly">
 		 <first ref="assembly"/> <second ref="assembly_cavity"/>
