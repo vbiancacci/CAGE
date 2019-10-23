@@ -28,20 +28,20 @@
  -->
 
 
-  <quantity name="bottom_height" type="length" value="crystal_height-top_height" unit="mm"/>
+  <quantity name="bottom_z" type="length" value="crystal_height-top_height" unit="mm"/>
   <quantity name="bottom_radius" type="length" value="crystal_width/2" unit="mm"/>
   
-  <quantity name="top_height" type="length" value="top_height" unit="mm"/>
+  <quantity name="top_z" type="length" value="top_height" unit="mm"/>
   <quantity name="top_minimum_radius" type="length" value="top_width/2" unit="mm"/>
   <quantity name="top_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
   <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
   
-  <quantity name="grooves_height" type="length" value="grooves_height" unit="mm"/>
+  <quantity name="grooves_z" type="length" value="grooves_height" unit="mm"/>
   <quantity name="grooves_minimum_radius" type="length" value="grooves_inner_width/2" unit="mm"/>
   <quantity name="grooves_maximum_radius" type="length" value="grooves_outer_width/2" unit="mm"/>
  
-  <position name="pos_grooves" z="-4.04/2" />  ####???
-  <position name="pos_union" unit="mm" z="4.02"/> ####? 
+  <position name="pos_grooves"  z="(bottom_z+grooves_z)/2" />  
+  <position name="pos_union"  z="(bottom_z+grooves_z+top_z)/2"/> 
  
   <position name="center" x="0" y="0" z="0"/>
   <rotation name="identity" x="0" y="0" z="0" />
@@ -67,11 +67,11 @@
 ##########################################
 
  <solids>
-	 <tube name="bottom" rmax="bottom_radius" z="bottom_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="bottom" rmax="bottom_radius" z="bottom_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
   
-  	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius"  z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius"  z="grooves_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
   	 <subtraction name="bottom_grooves">
 		 <first ref="bottom"/> <second ref="grooves"/>

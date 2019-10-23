@@ -5,6 +5,7 @@
  <define>
 	 <position name="pos_tube" x="10" y="0" z="0" />
 	 <position name="pos_box" x="0" y="0" z="0"/>
+	 <position name="pos_union" x="0" y="0" z="10"/>
 	 
 	 <rotation name="rot_tube1" x="pi" y="0" z="0"/>
 	 <rotation name="rot_tube2" deltaphi="pi" />
@@ -36,8 +37,8 @@
  <solids>
 	 <box name="world" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
 
-	 <tube name="tube1" z="300.0" rmax="50.0" rmin="20.0" unit="mm" deltaphi="2*pi" />
-	 <tube name="tube2" z="300.0" rmax="20.0" unit="mm" deltaphi="2*pi" />
+	 <tube name="tube1" z="100.0" rmax="50.0" rmin="20.0" lunit="mm" deltaphi="2*pi" />
+	 <tube name="tube2" z="300.0" rmax="20.0" lunit="mm" deltaphi="2*pi" />
   
 	 <box name="box1" x="100.0" y="100.0" z="100.0" unit="mm" />
 
@@ -46,11 +47,11 @@
 		 <first ref="bottom"/> <second ref="grooves"/>
 		 <positionref ref="pos_grooves"/>
 	 </subtraction>
-	 
-	 <union name="final">
-		 <first ref="bottom_grooves"/> <second ref="top"/>
+	--> 
+	 <union name="union">
+		 <first ref="box1"/> <second ref="tube1"/>
 		 <positionref ref="pos_union"/>
-	 </union>  -->
+	 </union> 
  </solids>
 
 ##########################################
@@ -67,23 +68,26 @@
                  <solidref ref="box1"/>
                  <materialref ref="enriched_germanium"/>
 	 </volume>  
+         <volume name="Union">
+                 <solidref ref="union"/>
+                 <materialref ref="enriched_germanium"/>
+	 </volume>  
 
          <volume name="World">
                  <solidref ref="world"/>
                  <materialref ref="Nitrogen"/>
-                 <physvol>
+<!--                 <physvol>
                          <volumeref ref="Tube1"/>
                          <positionref ref="pos_tube"/>
                          <rotationref ref="rot_tube1"/>
                  </physvol>
-<!--                 <physvol>
+                 <physvol>
                          <volumeref ref="Tube2"/>
                          <positionref ref="pos_tube"/>
                          <rotationref ref="rot_tube2"/>
 		 </physvol> -->
                  <physvol>
-                         <volumeref ref="Box"/>
-                         <positionref ref="pos_box"/>
+                         <volumeref ref="Union"/>
                  </physvol>
          </volume>
  </structure>
@@ -91,7 +95,7 @@
 ##########################################
 
  <setup name="Default" version="1.0">
-	 <world ref="Tube1"/>
+	 <world ref="World"/>
  </setup>
 
 </gdml>

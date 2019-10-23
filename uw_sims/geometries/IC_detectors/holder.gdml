@@ -27,32 +27,35 @@
   &define_IC48A;
   &define_IC48A;
   -->
-  <quantity name="cylinder_height" type="length" value="cylinder_outer_height" unit="mm"/>
+  <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
   <quantity name="cylinder_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
 
-  <quantity name="bottom_cylinder_height" type="length" value="(holder_height-cylinder_outer_height)" unit="mm"/>
+  <quantity name="bottom_cylinder_z" type="length" value="(holder_height-cylinder_outer_height)" unit="mm"/>
   <quantity name="bottom_cylinder_radius" type="length" value="bottom_cylinder_width/2" unit="mm"/>
   
-  <quantity name="cavity_height" type="length" value="cylinder_inner_height" unit="mm"/>
+  <quantity name="cavity_z" type="length" value="cylinder_inner_height" unit="mm"/>
   <quantity name="cavity_radius" type="length" value="cylinder_inner_width/2" unit="mm"/>
 
-  <quantity name="bottom_cavity_height" type="length" value="bottom_cavity_height" unit="mm"/>
+  <quantity name="bottom_cavity_z" type="length" value="bottom_cavity_height" unit="mm"/>
   <quantity name="bottom_cavity_radius" type="length" value="bottom_cavity_width/2" unit="mm"/>
   
-  <quantity name="ring_height" type="length" value="ring_height" unit="mm"/>
+  <quantity name="ring_z" type="length" value="ring_height" unit="mm"/>
   <quantity name="ring_maximum_radius" type="length" value="holder_width/2" unit="mm"/>
   <quantity name="ring_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
 
-  <quantity name="edge_height" type="length" value="edge_height" unit="mm"/>
+  <quantity name="edge_z" type="length" value="edge_height" unit="mm"/>
   <quantity name="edge_maximum_radius" type="length" value="holder_width/2" unit="mm"/>
   <quantity name="edge_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+  
+  <quantity name="a" type="lenght"  value="pos_bottom_ring_fromTop" unit="mm"/>
+  <quantity name="b" type="lenght"  value="pos_top_ring_fromTop" unit="mm"/>
 
-  <position name="pos_bottom_cylinder"  z="-6" />  <!--  -(cylinder_outer_height)/10" />  -->
-  <position name="pos_cavity"  z="(cylinder_outer_height-cylinder_inner_height)/10" />
-  <position name="pos_bottom_cavity"  z="-6" />                                                                    ######?????
-  <position name="pos_ring_bottom" z="((cylinder_outer_height-ring_height)/2-pos_bottom_ring_fromTop)/10" />
-  <position name="pos_ring_top"  z="((cylinder_outer_height-ring_height)/2-pos_top_ring_fromTop)/10" />
-  <position name="pos_edge" z="((cylinder_outer_height-edge_height)/2)/10"/>
+  <position name="pos_ring_bottom" z="(cylinder_z-ring_z)/2-a" />
+  <position name="pos_ring_top"  z="(cylinder_z-ring_z)/2-b" />
+  <position name="pos_edge" z="(cylinder_z-edge_z)/2"/>
+  <position name="pos_bottom_cylinder"  z="-(cylinder_z+bottom_cylinder_z)/2" />  
+  <position name="pos_bottom_cavity"  z="-(cavity_z+bottom_cavity_z)/2" />      
+  <position name="pos_cavity"  z="(cylinder_z-cavity_z)/2+0.01" />                <!-- 0.01 è necessario perchè la parete sopra, comune al cylinder e alla cavity, non viene eliminata -->
   <position name="center" x="0" y="0" z="0"/>
 
   <rotation name="identity" x="0" y="0" z="0" />
@@ -74,19 +77,34 @@
 ##########################################
 
  <solids>
-	 <tube name="cylinder" rmax="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 <tube name="bottom_cylinder" rmax="bottom_cylinder_radius" z="bottom_cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="cylinder" rmax="cylinder_radius" z="cylinder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 	 
-	 <tube name="cavity" rmax="cavity_radius" z="cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-  	 <tube name="bottom_cavity" rmax="bottom_cavity_radius" z="bottom_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="cavity" rmax="cavity_radius" z="cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <tube name="ring" rmin="ring_minimum_radius" rmax="ring_maximum_radius" z="ring_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="ring" rmin="ring_minimum_radius" rmax="ring_maximum_radius" z="ring_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <tube name="edge" rmin="edge_minimum_radius" rmax="edge_maximum_radius" z="edge_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="edge" rmin="edge_minimum_radius" rmax="edge_maximum_radius" z="edge_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
+	 <tube name="bottom_cylinder" rmax="bottom_cylinder_radius" z="bottom_cylinder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="bottom_cavity" rmax="bottom_cavity_radius" z="bottom_cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <union name="total_cylinder">
-		 <first ref="cylinder"/> <second ref="bottom_cylinder"/>
+   	 <union name="cylinder_ring_bottom">
+		 <first ref="cylinder"/> <second ref="ring"/>
+		 <positionref ref="pos_ring_bottom"/>
+	 </union>
+	 
+	 <union name="cylinder_ring">
+		 <first ref="cylinder_ring_bottom"/> <second ref="ring"/>
+		 <positionref ref="pos_ring_top"/>
+	 </union>
+	 
+	 <union name="cylinder_edge">
+		 <first ref="cylinder_ring"/> <second ref="edge"/>
+		 <positionref ref="pos_edge"/>
+	 </union>
+		
+	 <union name="total_cylinder">
+		 <first ref="cylinder_edge"/> <second ref="bottom_cylinder"/>
 		 <positionref ref="pos_bottom_cylinder"/>
   	 </union>
   
@@ -95,25 +113,11 @@
 		 <positionref ref="pos_bottom_cavity"/>
   	 </union>
 	 
-	 <subtraction name="base">
+	 <subtraction name="final_holder">
 		 <first ref="total_cylinder"/> <second ref="total_cavity"/>
 		 <positionref ref="pos_cavity"/>
 	 </subtraction>
 
-   	 <union name="base_ring_bottom">
-		 <first ref="base"/> <second ref="ring"/>
-		 <positionref ref="pos_ring_bottom"/>
-	 </union>
-	 
-	 <union name="base_ring">
-		 <first ref="base_ring_bottom"/> <second ref="ring"/>
-		 <positionref ref="pos_ring_top"/>
-	 </union>
-	 
-	 <union name="final_holder">
-		 <first ref="base_ring"/> <second ref="edge"/>
-		 <positionref ref="pos_edge"/>
-	 </union>
   
   <multiUnion name="final2" >
    <multiUnionNode name="node-1">
