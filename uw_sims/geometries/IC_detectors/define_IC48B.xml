@@ -64,6 +64,6 @@
 #############
  POSITIONS 
 #############
-  <constant name="position_crystal_fromTop"   value="6.0"/>
-  <constant name="position_holder_fromTop"   value="7.0" />
+  <constant name="position_crystal_fromTop"   value="7.0"/>
+  <constant name="position_holder_fromTop"   value="6.0" />
  

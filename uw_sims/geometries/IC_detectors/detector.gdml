@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 i<!DOCTYPE gdml [
-<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
 ]>
 <!--
 <!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
@@ -13,7 +13,7 @@ i<!DOCTYPE gdml [
 #########################################	
  <define>
 	
-	 &define_IC50A;
+	 &define_IC50B;
  <!--
  &define_IC48A;
  &define_IC48B;
@@ -21,17 +21,20 @@ i<!DOCTYPE gdml [
  &define_IC74A;
  -->
 
+###positions  <!-- when positioning a volume associated to a Boolean solid, the relative center of coordinates considered for the positioning is the one related to the first of the two constituent solids -->
+
+  <quantity name="bottom_z" type="length" value="crystal_height-top_height" unit="mm"/>
+  <quantity name="top_z" type="length" value="top_height" unit="mm"/>
+
+  <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
+
+  <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>
+
   <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/> 
   <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/> 
 
-  
-  <quantity name="crystal_z" type="lenght" value="crystal_height" unit="mm"/> 
-  <quantity name="holder_z" type="lenght" value="holder_height" unit="mm"/> 
-  <quantity name="assembly_z" type="lenght" value="assembly_height" unit="mm"/> 
-
-  <position name="pos_crystal" z="(assembly_z-crystal_z)/2-pos_crystal_fromTop" />
-  <position name="pos_holder" z="(assembly_z-holder_z)/2-pos_holder_fromTop" />
-
+  <position name="pos_crystal" z="(assembly_z-bottom_z)/2-top_z-pos_crystal_fromTop" />
+  <position name="pos_holder" z="(assembly_z-cylinder_z)/2-pos_holder_fromTop"  />
 
  </define>
 
@@ -76,10 +79,10 @@ i<!DOCTYPE gdml [
 		 <physvol>
 			 <file name="holder.gdml"/>
 			 <positionref ref="pos_holder"/>
-		 </physvol>
+		 </physvol> 
 		 <physvol>
 			 <file name="assembly.gdml"/>
-			 <positionref ref="pos_center"/>
+			 <positionref ref="center"/>
 		 </physvol>
 	 </volume>
  </structure>

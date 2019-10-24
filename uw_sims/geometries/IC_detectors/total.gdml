@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
 ]>
 <!--
 <!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
@@ -13,7 +13,7 @@
 
 ##########################################################################
  <define>
-	 &define_IC50A;
+	 &define_IC50B;
  <!--
  &define_IC48A;
  &define_IC48B;
@@ -75,7 +75,6 @@
   <position name="pos_bottom_cylinder"  z="-(cylinder_z+bottom_cylinder_z)/2" />
   <position name="pos_bottom_cavity"  z="-(cavity_z+bottom_cavity_z)/2" />
   <position name="pos_cavity"  z="(cylinder_z-cavity_z)/2+0.01" />        <!-- 0.01 is required since the two solids lie precisely next to each other -->
-  <position name="center" x="0" y="0" z="0"/>
 
 
 
@@ -96,9 +95,6 @@
   <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/>
   <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/>
   
-  <quantity name="crystal_z" type="lenght" value="crystal_height" unit="mm"/>
-  <quantity name="holder_z" type="lenght" value="holder_height" unit="mm"/>
-
   <position name="pos_crystal" z="(assembly_z-bottom_z)/2-top_z-pos_crystal_fromTop" />
   <position name="pos_holder" z="(assembly_z-cylinder_z)/2-pos_holder_fromTop"  /> 
 
@@ -265,10 +261,10 @@
 			  <volumeref ref="Crystal"/>
 			 <positionref ref="pos_crystal"/>
 		 </physvol> 
-	 <physvol>
+		 <physvol>
 			 <volumeref ref="Holder"/>
 			 <positionref ref="pos_holder"/>
-		 </physvol>
+		 </physvol> 
 		 <physvol>
 			 <volumeref ref="Assembly"/>
 			 <positionref ref="center"/>

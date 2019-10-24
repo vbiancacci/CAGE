@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
 ]>
 <!--
 <!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
@@ -21,7 +21,7 @@
  <define>
 
 
- &define_IC50A;
+ &define_IC50B;
  <!--
  &define_IC48A;
  &define_IC48B;
@@ -39,10 +39,6 @@
  
   <position name="pos_assembly_cavity" z="-(assembly_z-assembly_cavity_z+0.01)/2" />  <!-- 0.01 is required since the two solids lie precisely next to each other -->
   
-  <position name="center" x="0" y="0" z="0"/>
-  <rotation name="identity" x="0" y="0" z="0" />
-  <rotation name="initialisation"  x="90" unit="deg" />
-
  </define>
 
 ##########################################
