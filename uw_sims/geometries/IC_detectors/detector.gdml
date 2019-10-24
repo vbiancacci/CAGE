@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+i<!DOCTYPE gdml [
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
-
 
 #########################################	
  <define>
-	 <position name="pos_crystal" z="1.8" />
-	 <position name="pos_holder" z="2.5" />
-	 <position name="pos_assembly" z="0.0" />
- </define>
+	
+	 &define_IC50A;
+ <!--
+ &define_IC48A;
+ &define_IC48B;
+ &define_IC50B;
+ &define_IC74A;
+ -->
 
+  <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/> 
+  <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/> 
+
+  
+  <quantity name="crystal_z" type="lenght" value="crystal_height" unit="mm"/> 
+  <quantity name="holder_z" type="lenght" value="holder_height" unit="mm"/> 
+  <quantity name="assembly_z" type="lenght" value="assembly_height" unit="mm"/> 
+
+  <position name="pos_crystal" z="(assembly_z-crystal_z)/2-pos_crystal_fromTop" />
+  <position name="pos_holder" z="(assembly_z-holder_z)/2-pos_holder_fromTop" />
+
+
+ </define>
 
 ##########################################
 
@@ -54,7 +79,7 @@
 		 </physvol>
 		 <physvol>
 			 <file name="assembly.gdml"/>
-			 <positionref ref="pos_assembly"/>
+			 <positionref ref="pos_center"/>
 		 </physvol>
 	 </volume>
  </structure>

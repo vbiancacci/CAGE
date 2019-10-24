@@ -24,75 +24,83 @@
 
   <position name="center" x="0" y="0" z="0"/>
   <rotation name="identity" x="0" y="0" z="0" />
-  <rotation name="initialisation"  x="90" unit="deg" />
 
 
 ###crystal
-  <quantity name="bottom_height" type="length" value="crystal_height-top_height" unit="mm"/>
+  <quantity name="bottom_z" type="length" value="crystal_height-top_height" unit="mm"/>
   <quantity name="bottom_radius" type="length" value="crystal_width/2" unit="mm"/>
   
-  <quantity name="top_height" type="length" value="top_height" unit="mm"/>
+  <quantity name="top_z" type="length" value="top_height" unit="mm"/>
   <quantity name="top_minimum_radius" type="length" value="top_width/2" unit="mm"/>
   <quantity name="top_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
   <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
   
-  <quantity name="grooves_height" type="length" value="grooves_height" unit="mm"/>
+  <quantity name="grooves_z" type="length" value="grooves_height" unit="mm"/>
   <quantity name="grooves_minimum_radius" type="length" value="grooves_inner_width/2" unit="mm"/>
   <quantity name="grooves_maximum_radius" type="length" value="grooves_outer_width/2" unit="mm"/>
  
-  <position name="pos_grooves" z="-4.04/2" />  ####???
-  <position name="pos_union" unit="mm" z="4.02"/> ####? 
-  
+  <position name="pos_grooves"  z="-(bottom_z-grooves_z+0.01)/2" />    <!-- 0.01 is required since the two solids lie precisely next to each other -->
+  <position name="pos_union"  z="(bottom_z+top_z)/2"/>
+ 
 
 
 ###holder
 
-  <quantity name="cylinder_height" type="length" value="cylinder_outer_height" unit="mm"/>
+  <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
   <quantity name="cylinder_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
 
-  <quantity name="bottom_cylinder_height" type="length" value="(holder_height-cylinder_outer_height)" unit="mm"/>
+  <quantity name="bottom_cylinder_z" type="length" value="(holder_height-cylinder_outer_height)" unit="mm"/>
   <quantity name="bottom_cylinder_radius" type="length" value="bottom_cylinder_width/2" unit="mm"/>
-  
-  <quantity name="cavity_height" type="length" value="cylinder_inner_height" unit="mm"/>
+
+  <quantity name="cavity_z" type="length" value="cylinder_inner_height" unit="mm"/>
   <quantity name="cavity_radius" type="length" value="cylinder_inner_width/2" unit="mm"/>
 
-  <quantity name="bottom_cavity_height" type="length" value="bottom_cavity_height" unit="mm"/>
+  <quantity name="bottom_cavity_z" type="length" value="bottom_cavity_height" unit="mm"/>
   <quantity name="bottom_cavity_radius" type="length" value="bottom_cavity_width/2" unit="mm"/>
-  
-  <quantity name="ring_height" type="length" value="ring_height" unit="mm"/>
+
+  <quantity name="ring_z" type="length" value="ring_height" unit="mm"/>
   <quantity name="ring_maximum_radius" type="length" value="holder_width/2" unit="mm"/>
   <quantity name="ring_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
 
-  <quantity name="edge_height" type="length" value="edge_height" unit="mm"/>
+  <quantity name="edge_z" type="length" value="edge_height" unit="mm"/>
   <quantity name="edge_maximum_radius" type="length" value="holder_width/2" unit="mm"/>
   <quantity name="edge_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
 
-  <position name="pos_bottom_cylinder"  z="-6" />  <!--  -(cylinder_outer_height)/10" />  -->
-  <position name="pos_cavity"  z="(cylinder_outer_height-cylinder_inner_height)/10" />
-  <position name="pos_bottom_cavity"  z="-6" />                                                                    ######?????
-  <position name="pos_ring_bottom" z="((cylinder_outer_height-ring_height)/2-pos_bottom_ring_fromTop)/10" />
-  <position name="pos_ring_top"  z="((cylinder_outer_height-ring_height)/2-pos_top_ring_fromTop)/10" />
-  <position name="pos_edge" z="((cylinder_outer_height-edge_height)/2)/10"/>
+  <quantity name="pos_bottom_ring_fromTop" type="lenght"  value="position_bottom_ring_fromTop" unit="mm"/>
+  <quantity name="pos_top_ring_fromTop" type="lenght"  value="position_top_ring_fromTop" unit="mm"/>
+
+  <position name="pos_ring_bottom" z="(cylinder_z-ring_z)/2-pos_bottom_ring_fromTop" />
+  <position name="pos_ring_top"  z="(cylinder_z-ring_z)/2-pos_top_ring_fromTop" />
+  <position name="pos_edge" z="(cylinder_z-edge_z)/2"/>
+  <position name="pos_bottom_cylinder"  z="-(cylinder_z+bottom_cylinder_z)/2" />
+  <position name="pos_bottom_cavity"  z="-(cavity_z+bottom_cavity_z)/2" />
+  <position name="pos_cavity"  z="(cylinder_z-cavity_z)/2+0.01" />        <!-- 0.01 is required since the two solids lie precisely next to each other -->
+  <position name="center" x="0" y="0" z="0"/>
 
 
 
 ###assembly
 
-  <quantity name="assembly_height" type="length" value="assembly_height" unit="mm"/>
+  <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>
   <quantity name="assembly_radius" type="length" value="assembly_width/2" unit="mm"/>
   
-  <quantity name="assembly_cavity_height" type="length" value="assembly_cavity_height" unit="mm"/>
+  <quantity name="assembly_cavity_z" type="length" value="assembly_cavity_height" unit="mm"/>
   <quantity name="assembly_cavity_radius" type="length" value="assembly_cavity_width/2" unit="mm"/>
   
-  <position name="pos_assembly_cavity" z="0.15" />  ####???
+  <position name="pos_assembly_cavity" z="-(assembly_z-assembly_cavity_z+0.01)/2" />  <!-- 0.01 is required since the two solids lie precisely next to each other -->
 
 
 
-###positions
+###positions     <!-- when positioning a volume associated to a Boolean solid, the relative center of coordinates considered for the positioning is the one related to the first of the two constituent solids --> 
 
-  <position name="pos_crystal" z="1.8" />
-  <position name="pos_holder" z="2.5" />
-  <position name="pos_assembly" z="0.0" />
+  <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/>
+  <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/>
+  
+  <quantity name="crystal_z" type="lenght" value="crystal_height" unit="mm"/>
+  <quantity name="holder_z" type="lenght" value="holder_height" unit="mm"/>
+
+  <position name="pos_crystal" z="(assembly_z-bottom_z)/2-top_z-pos_crystal_fromTop" />
+  <position name="pos_holder" z="(assembly_z-cylinder_z)/2-pos_holder_fromTop"  /> 
 
  </define>
 
@@ -142,16 +150,16 @@
 
 ###crystal
 
-	 <tube name="bottom" rmax="bottom_radius" z="bottom_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="bottom" rmax="bottom_radius" z="bottom_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
   
-  	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius" z="grooves_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius" z="grooves_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
   	 <subtraction name="bottom_grooves">
 		 <first ref="bottom"/> <second ref="grooves"/>
 		 <positionref ref="pos_grooves"/>
-	 </subtraction>
+ 	 </subtraction>
 	 
 	 <union name="final_crystal">
 		 <first ref="bottom_grooves"/> <second ref="top"/>
@@ -160,47 +168,47 @@
 
 
 ###holder
+         <tube name="cylinder" rmax="cylinder_radius" z="cylinder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+    
+         <tube name="cavity" rmax="cavity_radius" z="cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-	 <tube name="cylinder" rmax="cylinder_radius" z="cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 <tube name="bottom_cylinder" rmax="bottom_cylinder_radius" z="bottom_cylinder_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 
-	 <tube name="cavity" rmax="cavity_radius" z="cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-  	 <tube name="bottom_cavity" rmax="bottom_cavity_radius" z="bottom_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+         <tube name="ring" rmin="ring_minimum_radius" rmax="ring_maximum_radius" z="ring_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <tube name="ring" rmin="ring_minimum_radius" rmax="ring_maximum_radius"z="ring_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+         <tube name="edge" rmin="edge_minimum_radius" rmax="edge_maximum_radius" z="edge_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <tube name="edge" rmin="edge_minimum_radius" rmax="edge_maximum_radius" z="edge_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+         <tube name="bottom_cylinder" rmax="bottom_cylinder_radius" z="bottom_cylinder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+         <tube name="bottom_cavity" rmax="bottom_cavity_radius" z="bottom_cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-
-  	 <union name="total_cylinder">
-		 <first ref="cylinder"/> <second ref="bottom_cylinder"/>
-		 <positionref ref="pos_bottom_cylinder"/>
-  	 </union>
+         <union name="cylinder_ring_bottom">
+                 <first ref="cylinder"/> <second ref="ring"/>
+                 <positionref ref="pos_ring_bottom"/>
+         </union>
+    
+         <union name="cylinder_ring">
+                 <first ref="cylinder_ring_bottom"/> <second ref="ring"/>
+                 <positionref ref="pos_ring_top"/>
+         </union>
+    
+         <union name="cylinder_edge">
+                 <first ref="cylinder_ring"/> <second ref="edge"/>
+                 <positionref ref="pos_edge"/>
+         </union>
+    
+         <union name="total_cylinder">
+                 <first ref="cylinder_edge"/> <second ref="bottom_cylinder"/>
+                 <positionref ref="pos_bottom_cylinder"/>
+         </union>
   
-   	 <union name="total_cavity">
-		 <first ref="cavity"/> <second ref="bottom_cavity"/>
-		 <positionref ref="pos_bottom_cavity"/>
-  	 </union>
-	 
-	 <subtraction name="base">
-		 <first ref="total_cylinder"/> <second ref="total_cavity"/>
-		 <positionref ref="pos_cavity"/>
-	 </subtraction>
+         <union name="total_cavity">
+                 <first ref="cavity"/> <second ref="bottom_cavity"/>
+                 <positionref ref="pos_bottom_cavity"/>
+         </union>
+    
+         <subtraction name="final_holder">
+                 <first ref="total_cylinder"/> <second ref="total_cavity"/>
+                 <positionref ref="pos_cavity"/>
+         </subtraction>
 
-   	 <union name="base_ring_bottom">
-		 <first ref="base"/> <second ref="ring"/>
-		 <positionref ref="pos_ring_bottom"/>
-	 </union>
-	 
-	 <union name="base_ring">
-		 <first ref="base_ring_bottom"/> <second ref="ring"/>
-		 <positionref ref="pos_ring_top"/>
-	 </union>
-	 
-	 <union name="final_holder">
-		 <first ref="base_ring"/> <second ref="edge"/>
-		 <positionref ref="pos_edge"/>
-	 </union>
   
   <multiUnion name="final2" >
    <multiUnionNode name="node-1">
@@ -223,8 +231,8 @@
 
 ###assembly
 
-	 <tube name="assembly" rmax="assembly_radius" z="assembly_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
-	 <tube name="assembly_cavity" rmax="assembly_cavity_radius" z="assembly_cavity_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="assembly" rmax="assembly_radius" z="assembly_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="assembly_cavity" rmax="assembly_cavity_radius" z="assembly_cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 	 
 	 <subtraction name="final_assembly">
 		 <first ref="assembly"/> <second ref="assembly_cavity"/>
@@ -254,17 +262,17 @@
 		 <solidref ref="world"/>
 		 <materialref ref="Vacuum"/>
 		 <physvol>
-			 <volumeref ref="Crystal"/>
+			  <volumeref ref="Crystal"/>
 			 <positionref ref="pos_crystal"/>
-		 </physvol>
-		 <physvol>
+		 </physvol> 
+	 <physvol>
 			 <volumeref ref="Holder"/>
 			 <positionref ref="pos_holder"/>
 		 </physvol>
 		 <physvol>
 			 <volumeref ref="Assembly"/>
-			 <positionref ref="pos_assembly"/>
-		 </physvol>
+			 <positionref ref="center"/>
+		 </physvol>    
 	 </volume> 
  </structure>
 
