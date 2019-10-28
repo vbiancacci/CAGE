@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
 <!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_source SYSTEM "define_source.xml">
 ]>
 <!--
 <!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
@@ -22,6 +23,13 @@
  &define_IC50B;
  &define_IC74A;
  -->
+&define_source;
+
+<!-- source -->
+
+  <quantity name="source_z" type="length" value="source_height" unit="mm"/>
+  <quantity name="source_radius" type="length" value="source_width/2" unit="mm"/>
+  
 
 
 
@@ -95,9 +103,11 @@
  
   <!-- when positioning a volume associated to a Boolean solid, the relative center of coordinates considered for the positioning is the one related to the first of the two constituent solids --> 
 
+  <quantity name="pos_source_fromAssembly" type="length" value="position_source_fromAssembly" unit="cm"/>
   <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/>
   <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/>
   
+  <position name="pos_source"  z="(assembly_z+source_z)/2+pos_source_fromAssembly" />
   <position name="pos_crystal" z="(assembly_z-bottom_z)/2-top_z-pos_crystal_fromTop" />
   <position name="pos_holder" z="(assembly_z-cylinder_z)/2-pos_holder_fromTop"  /> 
 
@@ -108,37 +118,74 @@
 
 
 
- <materials>
-	 <isotope name="Ge76" Z="32" N="76">    <!-- improper germanium definition -->
+
+ <materials> 
+
+	 <isotope name="Tl" Z="81" N="208" >
+		 <atom type="A" value="207.98" />
 	 </isotope>
-	 <isotope name="Ge36" Z="32" N="36">
-	 </isotope>
-	 
-	 <material name="enriched_germanium" >
-		 <D value="5.323" unit="mg/cm3"/>
-		 <fraction ref="Ge76" n="0.9" />
-		 <fraction ref="Ge36" n="0.1" />
+	 <material name="Tl208" formula="Tl" >
+		 <D value="11.72" unit="g/cm3" />
+		 <fraction n="1.0" ref="Tl" />
 	 </material>
 
-	 <material name="Al" Z="13.0" >
+	 <isotope name="Ge70" Z="32" N="70">
+		 <atom type="A" value="69.9243" />
+	 </isotope>
+	 <isotope name="Ge72" Z="32" N="72">
+		 <atom type="A" value="71.9221" />
+	 </isotope>
+	 <isotope name="Ge73" Z="32" N="73">
+		 <atom type="A" value="72.9235" />
+	 </isotope>
+	 <isotope name="Ge74" Z="32" N="74">
+		 <atom type="A" value="73.9212" />
+	 </isotope>
+	 <isotope name="Ge76" Z="32" N="76">
+		 <atom type="A" value="75.9214" />
+	 </isotope>
+	 <element name="enr_ge" formula="Ge" >    <!-- from MaGe -->
+		 <fraction n="0.0000397" ref="Ge70" /> <!-- /1.00821 -->
+		 <fraction n="0.0000893" ref="Ge70" />
+		 <fraction n="0.000278" ref="Ge70" />
+		 <fraction n="0.1258" ref="Ge70" />
+		 <fraction n="0.8738" ref="Ge70" />
+	 </element>  
+	 <material name="enriched_germanium" formula="Ge" >
+		 <D value="5.545" unit="g/cm3" />
+		 <fraction n="1.0" ref="enr_ge" />
+	 </material>
+
+ 
+	 <material name="Al" Z="13" >
 		 <D value="2.70" unit="g/cm3" />
 		 <atom value="26.98" />
 	 </material>
-
+	
+	 <material name="Pb" Z="82" >
+		 <D value="11.35" unit="g/cm3" />
+		 <atom value="207.2" />
+	 </material>
+	 
 	 <element Z="7" formula="N" name="Nitrogen" >
-                 <atom value="14.01" />
-         </element>
-         <element Z="8" formula="O" name="Oxygen" >
-                 <atom value="16" />
+		 <atom value="14.01" />
+	 </element>
+	 <element Z="8" formula="O" name="Oxygen" >
+		 <atom value="16" />
 	 </element>
 
-         <material formula="vacuum" name="Vacuum" >
-                 <D value="6.24151e-07" unit="g/cm3"/>  <!-- 1.0e-25 -->
-                 <composite n="2" ref="Nitrogen" />
-                 <composite n="2" ref="Oxygen" />
-         </material>
+	 <material formula="air" name="Air" >
+                 <D value="0.0012899" />
+                 <fraction n="0.7" ref="Nitrogen" />
+                 <fraction n="0.3" ref="Oxygen" />
+	 </material>
 
-</materials>
+	 <material formula="vacuum" name="Vacuum" >
+		 <D value="6.24151e-07" unit="g/cm3"/>  <!-- 1.0e-25 -->
+		 <composite n="2" ref="Nitrogen" />
+		 <composite n="2" ref="Oxygen" />
+	 </material>
+ </materials>
 
 
 
@@ -148,7 +195,17 @@
  <solids>
 
 <!-- WorldBox  -->
-	 <box name="world" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
+	 <box name="worldBox" lunit="m" x="100.0" y="100.0" z="100.0"/>
+
+<!-- shieldBox  -->
+	 <box name="shieldBox" lunit="m" x="2.0" y="2.0" z="2.0"/>
+
+<!-- cavityBox  -->
+	 <box name="cavityBox" lunit="m" x="1.0" y="1.0" z="1.0"/>
+
+<!-- source -->
+
+	 <tube name="source" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
 <!-- crystal -->
 
@@ -228,6 +285,10 @@
 
 
  <structure>
+	 <volume name="Source">
+                 <materialref ref="Al"/>
+                 <solidref ref="source"/>
+	 </volume>
 	 <volume name="Crystal">
                  <materialref ref="enriched_germanium"/>
                  <solidref ref="final_crystal"/>
@@ -239,24 +300,46 @@
 	 <volume name="Assembly">
                  <materialref ref="Al"/>
                  <solidref ref="final_assembly"/>
-         </volume>
+	 </volume>
 
+
+	 <volume name="Cavity">
+		 <materialref ref="Air"/>
+		 <solidref ref="cavityBox"/>
+                 <physvol>
+                         <volumeref ref="Source"/>
+                         <positionref ref="pos_source"/>
+                 </physvol>
+                 <physvol>
+                         <volumeref ref="Crystal"/>
+                         <positionref ref="pos_crystal"/>
+                 </physvol>
+                 <physvol>
+                         <volumeref ref="Holder"/>
+                         <positionref ref="pos_holder"/>
+                 </physvol>
+                 <physvol>
+                         <volumeref ref="Assembly"/>
+                         <positionref ref="center"/>
+                 </physvol>
+	 </volume>
+	 
+	 <volume name="Shield">
+		 <materialref ref="Pb"/>
+		 <solidref ref="shieldBox"/>
+		 <physvol>
+			 <volumeref ref="Cavity"/>
+			 <positionref ref="center"/>
+		 </physvol>
+	 </volume>
 
 	 <volume name="World">
-		 <solidref ref="world"/>
 		 <materialref ref="Vacuum"/>
+		 <solidref ref="worldBox"/>
 		 <physvol>
-			  <volumeref ref="Crystal"/>
-			 <positionref ref="pos_crystal"/>
-		 </physvol> 
-		 <physvol>
-			 <volumeref ref="Holder"/>
-			 <positionref ref="pos_holder"/>
-		 </physvol> 
-		 <physvol>
-			 <volumeref ref="Assembly"/>
+			  <volumeref ref="Shield"/>
 			 <positionref ref="center"/>
-		 </physvol>    
+		 </physvol> 
 	 </volume> 
  </structure>
 

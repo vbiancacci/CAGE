@@ -41,23 +41,18 @@ i<!DOCTYPE gdml [
 ##########################################
 
  <materials>
-	 <element Z="7" formula="N" name="Nitrogen" >
-		 <atom value="14.01" />
-	 </element>
-	 <element Z="8" formula="O" name="Oxygen" >
-		 <atom value="16" />
-	 </element>
+     <element Z="7" formula="N" name="Nitrogen" >
+                 <atom value="14.01" />
+         </element>
+         <element Z="8" formula="O" name="Oxygen" >
+                 <atom value="16" />
+         </element>
 
-	 <material name="Air" >
-		 <D value="0.00128" />
-		 <fraction n="0.7" ref="Nitrogen" />
-		 <fraction n="0.3" ref="Oxygen" />
-	 </material>
-	 
-	 
-	 <material name="Vacuum" >
-		 <D value="1.0e-25" unit="g/cm3"/>
-	 </material>
+         <material formula="vacuum" name="Vacuum" >
+                 <D value="6.24151e-07" unit="g/cm3"/>  <!-- 1.0e-25 -->
+                 <composite n="2" ref="Nitrogen" />
+                 <composite n="2" ref="Oxygen" />
+         </material>
  </materials>
 
 ##########################################

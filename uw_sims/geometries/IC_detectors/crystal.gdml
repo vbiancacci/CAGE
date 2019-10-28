@@ -48,7 +48,7 @@
 ##########################################
 
  <materials>
-	 <isotope name="Ge76" Z="32" N="76">
+	 <isotope name="Ge76" Z="32" N="76">   <!-- improper germanium definition -->
 	 </isotope>
 	 <isotope name="Ge36" Z="32" N="36">
 	 </isotope>
