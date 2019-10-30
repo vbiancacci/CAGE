@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_source SYSTEM "define_source.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+
+
+ <define>
+	 &define_IC50A;
+ <!--
+ &define_IC48A;
+ &define_IC48B;
+ &define_IC50B;
+ &define_IC74A;
+ -->
+&define_source;
+
+<!-- source -->
+
+  <quantity name="source_z" type="length" value="source_height" unit="mm"/>
+  <quantity name="source_radius" type="length" value="source_width/2" unit="mm"/>
+  
+
+
+
+<!--crystal-->
+
+
+  <quantity name="bottom_z" type="length" value="(crystal_height-top_height)" unit="mm"/>
+  <quantity name="bottom_radius" type="length" value="crystal_width/2" unit="mm"/>
+  
+  <quantity name="top_z" type="length" value="top_height" unit="mm"/>
+  <quantity name="top_minimum_radius" type="length" value="top_width/2" unit="mm"/>
+  <quantity name="top_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
+  <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
+  
+  <quantity name="grooves_z" type="length" value="grooves_height" unit="mm"/>
+  <quantity name="grooves_minimum_radius" type="length" value="grooves_inner_width/2" unit="mm"/>
+  <quantity name="grooves_maximum_radius" type="length" value="grooves_outer_width/2" unit="mm"/>
+ 
+  <position name="pos_grooves"  z="-(bottom_z-grooves_z+0.01)/2" />    <!-- 0.01 is required since the two solids lie precisely next to each other -->
+  <position name="pos_union"  z="(bottom_z+top_z)/2"/>
+ 
+
+
+<!-- holder  -->
+
+  <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
+  <quantity name="cylinder_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+
+  <quantity name="bottom_cylinder_z" type="length" value="(holder_height-cylinder_outer_height)" unit="mm"/>
+  <quantity name="bottom_cylinder_radius" type="length" value="bottom_cylinder_width/2" unit="mm"/>
+
+  <quantity name="cavity_z" type="length" value="cylinder_inner_height" unit="mm"/>
+  <quantity name="cavity_radius" type="length" value="cylinder_inner_width/2" unit="mm"/>
+
+  <quantity name="bottom_cavity_z" type="length" value="bottom_cavity_height" unit="mm"/>
+  <quantity name="bottom_cavity_radius" type="length" value="bottom_cavity_width/2" unit="mm"/>
+
+  <quantity name="ring_z" type="length" value="ring_height" unit="mm"/>
+  <quantity name="ring_maximum_radius" type="length" value="holder_width/2" unit="mm"/>
+  <quantity name="ring_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+
+  <quantity name="edge_z" type="length" value="edge_height" unit="mm"/>
+  <quantity name="edge_maximum_radius" type="length" value="holder_width/2" unit="mm"/>
+  <quantity name="edge_minimum_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+
+  <quantity name="pos_bottom_ring_fromTop" type="lenght"  value="position_bottom_ring_fromTop" unit="mm"/>
+  <quantity name="pos_top_ring_fromTop" type="lenght"  value="position_top_ring_fromTop" unit="mm"/>
+
+  <position name="pos_ring_bottom" z="(cylinder_z-ring_z)/2-pos_bottom_ring_fromTop" />
+  <position name="pos_ring_top"  z="(cylinder_z-ring_z)/2-pos_top_ring_fromTop" />
+  <position name="pos_edge" z="(cylinder_z-edge_z)/2"/>
+  <position name="pos_bottom_cylinder"  z="-(cylinder_z+bottom_cylinder_z)/2" />
+  <position name="pos_bottom_cavity"  z="-(cavity_z+bottom_cavity_z)/2" />
+  <position name="pos_cavity"  z="(cylinder_z-cavity_z)/2+0.01" />        <!-- 0.01 is required since the two solids lie precisely next to each other -->
+
+
+
+<!-- assembly -->
+
+  <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>
+  <quantity name="assembly_radius" type="length" value="assembly_width/2" unit="mm"/>
+  
+  <quantity name="assembly_cavity_z" type="length" value="assembly_cavity_height" unit="mm"/>
+  <quantity name="assembly_cavity_radius" type="length" value="assembly_cavity_width/2" unit="mm"/>
+  
+  <position name="pos_assembly_cavity" z="-(assembly_z-assembly_cavity_z+0.01)/2" />  <!-- 0.01 is required since the two solids lie precisely next to each other -->
+
+
+
+<!-- positions -->    
+ 
+  <!-- when positioning a volume associated to a Boolean solid, the relative center of coordinates considered for the positioning is the one related to the first of the two constituent solids --> 
+
+  <quantity name="pos_source_fromAssembly" type="length" value="position_source_fromAssembly" unit="cm"/>
+  <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/>
+  <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/>
+  
+  <position name="pos_source"  z="(assembly_z+source_z)/2+pos_source_fromAssembly" />
+  <position name="pos_crystal" z="(assembly_z-bottom_z)/2-top_z-pos_crystal_fromTop" />
+  <position name="pos_holder" z="(assembly_z-cylinder_z)/2-pos_holder_fromTop"  /> 
+
+ </define>
+
+
+
+
+
+
+
+ <materials> 
+
+	 <isotope name="Tl" Z="81" N="208" >
+		 <atom type="A" value="207.98" />
+	 </isotope>
+	 <material name="Tl208" formula="Tl" >
+		 <D value="11.72" unit="g/cm3" />
+		 <fraction n="1.0" ref="Tl" />
+	 </material>
+
+	 <isotope name="Ge70" Z="32" N="70">
+		 <atom type="A" value="69.9243" />
+	 </isotope>
+	 <isotope name="Ge72" Z="32" N="72">
+		 <atom type="A" value="71.9221" />
+	 </isotope>
+	 <isotope name="Ge73" Z="32" N="73">
+		 <atom type="A" value="72.9235" />
+	 </isotope>
+	 <isotope name="Ge74" Z="32" N="74">
+		 <atom type="A" value="73.9212" />
+	 </isotope>
+	 <isotope name="Ge76" Z="32" N="76">
+		 <atom type="A" value="75.9214" />
+	 </isotope>
+	 <element name="enr_ge" formula="Ge" >     <!--from MaGe -->
+		 <fraction n="0.0000397" ref="Ge70" /> <!-- /1.00821 -->
+		 <fraction n="0.0000893" ref="Ge70" />
+		 <fraction n="0.000278" ref="Ge70" />
+		 <fraction n="0.1258" ref="Ge70" />
+		 <fraction n="0.8738" ref="Ge70" />
+	 </element>  
+	 <material name="enriched_germanium" formula="Ge" >
+		 <D value="5.545" unit="g/cm3" />
+		 <fraction n="1.0" ref="enr_ge" />
+	 </material>
+
+ 
+	 <material name="Al" Z="13" >
+		 <D value="2.70" unit="g/cm3" />
+		 <atom value="26.98" />
+	 </material>
+	
+	 <material name="Pb" Z="82" >
+		 <D value="11.35" unit="g/cm3" />
+		 <atom value="207.2" />
+	 </material>
+	 
+	 <element Z="7" formula="N" name="Nitrogen" >
+		 <atom value="14.01" />
+	 </element>
+	 <element Z="8" formula="O" name="Oxygen" >
+		 <atom value="16" />
+	 </element>
+
+	 <material formula="air" name="Air" >
+                 <D value="0.0012899" />
+                 <fraction n="0.7" ref="Nitrogen" />
+                 <fraction n="0.3" ref="Oxygen" />
+	 </material>
+
+	 <material formula="vacuum" name="Vacuum" >
+		 <D value="6.24151e-07" unit="g/cm3"/>  <!-- 1.0e-25 -->
+		 <composite n="2" ref="Nitrogen" />
+		 <composite n="2" ref="Oxygen" />
+	 </material>
+
+	 <element Z="26" formula="Fe" name="Iron" >
+		 <atom value="55.94" />
+	 </element>
+	 <element Z="24" formula="Cr" name="Chromium" >
+		 <atom value="51.99" />
+	 </element>
+	 <element Z="28" formula="Ni" name="Nichel" >
+		 <atom value="58.69" />
+	 </element>
+         <material name="Stainless_steel" formula="S_steel" >
+                 <D value="8" unit="g/cm3" />
+                 <fraction n="0.74" ref="Iron" /> 
+                 <fraction n="0.18" ref="Chromium" />
+                 <fraction n="0.08" ref="Nichel" />
+         </material>
+
+ 
+ 
+ 
+ </materials>
+
+
+
+
+
+
+ <solids>
+
+<!-- WorldBox  -->
+	 <box name="worldBox" lunit="m" x="100.0" y="100.0" z="100.0"/>
+
+<!-- shieldBox  -->
+	 <box name="shieldBox" lunit="m" x="2.0" y="2.0" z="2.0"/>
+
+<!-- cavityBox  -->
+	 <box name="cavityBox" lunit="m" x="1.0" y="1.0" z="1.0"/>
+
+<!-- source -->
+
+	 <tube name="source" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+<!-- crystal -->
+
+	 <tube name="bottom" rmax="bottom_radius" z="bottom_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  
+  	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius" z="grooves_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+  	 <subtraction name="bottom_grooves">
+		 <first ref="bottom"/> <second ref="grooves"/>
+		 <positionref ref="pos_grooves"/>
+ 	 </subtraction>
+	 
+	 <union name="final_crystal">
+		 <first ref="bottom_grooves"/> <second ref="top"/>
+		 <positionref ref="pos_union"/>
+	 </union>
+
+
+<!-- holder -->
+         <tube name="cylinder" rmax="cylinder_radius" z="cylinder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+    
+         <tube name="cavity" rmax="cavity_radius" z="cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+         <tube name="ring" rmin="ring_minimum_radius" rmax="ring_maximum_radius" z="ring_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+         <tube name="edge" rmin="edge_minimum_radius" rmax="edge_maximum_radius" z="edge_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+         <tube name="bottom_cylinder" rmax="bottom_cylinder_radius" z="bottom_cylinder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+         <tube name="bottom_cavity" rmax="bottom_cavity_radius" z="bottom_cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+         <union name="cylinder_ring_bottom">
+                 <first ref="cylinder"/> <second ref="ring"/>
+                 <positionref ref="pos_ring_bottom"/>
+         </union>
+    
+         <union name="cylinder_ring">
+                 <first ref="cylinder_ring_bottom"/> <second ref="ring"/>
+                 <positionref ref="pos_ring_top"/>
+         </union>
+    
+         <union name="cylinder_edge">
+                 <first ref="cylinder_ring"/> <second ref="edge"/>
+                 <positionref ref="pos_edge"/>
+         </union>
+    
+         <union name="total_cylinder">
+                 <first ref="cylinder_edge"/> <second ref="bottom_cylinder"/>
+                 <positionref ref="pos_bottom_cylinder"/>
+         </union>
+  
+         <union name="total_cavity">
+                 <first ref="cavity"/> <second ref="bottom_cavity"/>
+                 <positionref ref="pos_bottom_cavity"/>
+         </union>
+    
+         <subtraction name="final_holder">
+                 <first ref="total_cylinder"/> <second ref="total_cavity"/>
+                 <positionref ref="pos_cavity"/>
+         </subtraction>
+
+
+<!-- assembly -->
+
+	 <tube name="assembly" rmax="assembly_radius" z="assembly_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="assembly_cavity" rmax="assembly_cavity_radius" z="assembly_cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 
+	 <subtraction name="final_assembly">
+		 <first ref="assembly"/> <second ref="assembly_cavity"/>
+		 <positionref ref="pos_assembly_cavity"/>
+	 </subtraction>
+
+ </solids>
+
+
+
+
+ <structure>
+	 <volume name="Source">
+                 <materialref ref="Stainless_steel"/>
+                 <solidref ref="source"/>
+	 </volume>
+	 <volume name="Crystal">
+                 <materialref ref="enriched_germanium"/>
+                 <solidref ref="final_crystal"/>
+	 </volume>
+	 <volume name="Holder">
+                 <materialref ref="Al"/>
+                 <solidref ref="final_holder"/>
+         </volume>
+	 <volume name="Assembly">
+                 <materialref ref="Al"/>
+                 <solidref ref="final_assembly"/>
+	 </volume>
+
+
+	 <volume name="Cavity">
+		 <materialref ref="Air"/>
+		 <solidref ref="cavityBox"/>
+                 <physvol>
+                         <volumeref ref="Source"/>
+                         <positionref ref="pos_source"/>
+                 </physvol>
+                 <physvol>
+                         <volumeref ref="Crystal"/>
+                         <positionref ref="pos_crystal"/>
+                 </physvol>
+                 <physvol>
+                         <volumeref ref="Holder"/>
+                         <positionref ref="pos_holder"/>
+                 </physvol>
+                 <physvol>
+                         <volumeref ref="Assembly"/>
+                         <positionref ref="center"/>
+                 </physvol>
+	 </volume>
+	 
+	 <volume name="Shield">
+		 <materialref ref="Pb"/>
+		 <solidref ref="shieldBox"/>
+		 <physvol>
+			 <volumeref ref="Cavity"/>
+			 <positionref ref="center"/>
+		 </physvol>
+	 </volume>
+
+	 <volume name="World">
+		 <materialref ref="Vacuum"/>
+		 <solidref ref="worldBox"/>
+		 <physvol>
+			  <volumeref ref="Shield"/>
+			 <positionref ref="center"/>
+		 </physvol> 
+	 </volume> 
+ </structure>
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="World"/>
+ </setup>
+
+</gdml>
+
+
+
+

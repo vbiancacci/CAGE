@@ -1,0 +1,70 @@
+
+###IC50B
+
+  <constant name="HALFPI" value="pi/2."/>
+  <constant name="PI" value="1.*pi"/>
+  <constant name="TWOPI" value="2.*pi"/>
+
+
+  <position name="center" x="0" y="0" z="0"/>
+  <rotation name="identity" x="0" y="0" z="0" />
+  
+  
+#############
+  CRYSTAL
+#############
+
+
+  <constant name="crystal_height"   value="85.4" />
+  <constant name="top_height"   value="53.9" />
+  <constant name="grooves_height"   value="2.0" />
+
+  <constant name="crystal_width"   value="72.6" />
+  <constant name="top_width"   value="72.6" />
+  <constant name="cavity_width"   value="10.5" />
+  <constant name="grooves_inner_width"   value="19.0" />
+  <constant name="grooves_outer_width"   value="27.0" />
+
+
+
+############
+  HOLDER
+############
+
+
+  <constant name="holder_height"   value="133.5"/>
+  <constant name="cylinder_outer_height"   value="108.1"/>
+  <constant name="cylinder_inner_height"   value="105.0"/>
+  <constant name="ring_height"   value="8.6" />
+  <constant name="edge_height"   value="1.3" />
+  <constant name="bottom_cavity_height"   value="20.0" />  
+  
+  <constant name="position_bottom_ring_fromTop"   value="64.4"/>
+  <constant name="position_top_ring_fromTop"   value="14.0" />
+ 
+  <constant name="holder_width"   value="81.0" />
+  <constant name="cylinder_outer_width"   value="76.6" />
+  <constant name="cylinder_inner_width"   value="75.0" />
+  <constant name="bottom_cavity_width"   value="16.0" /> 
+  <constant name="bottom_cylinder_width"   value="26.0" /> 
+
+
+
+#############
+ ASSEMBLY 
+#############
+
+  <constant name="assembly_height"   value="170.0"/> 
+  <constant name="assembly_cavity_height"   value="168.5"/> 
+
+  <constant name="assembly_width"   value="101.6"/> 
+  <constant name="assembly_cavity_width"   value="98.6"/> 
+
+
+
+#############
+ POSITIONS
+#############
+  <constant name="position_crystal_fromTop"   value="7.0"/>
+  <constant name="position_holder_fromTop"   value="6.0" />
+
