@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
 ]>
-<!--
-<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
-<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
-<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
-<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
--->
 
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
@@ -21,13 +15,7 @@
  <define>
 
 
- &define_IC50B;
- <!--
- &define_IC48A;
- &define_IC48B;
- &define_IC50B;
- &define_IC74A;
- -->
+ &define_dimension;
 
 
   <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>

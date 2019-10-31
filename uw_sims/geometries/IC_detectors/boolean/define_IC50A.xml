@@ -16,13 +16,13 @@
 
   <constant name="crystal_height"   value="80.4" />
   <constant name="top_height"   value="40.0" />
-  <constant name="grooves_height"   value="2.0" />
+  <constant name="groove_height"   value="2.0" />
 
   <constant name="crystal_width"   value="74.7" />
   <constant name="top_width"   value="72.2" />  
   <constant name="cavity_width"   value="10.5" />
-  <constant name="grooves_inner_width"   value="19.0" />
-  <constant name="grooves_outer_width"   value="27.0" />
+  <constant name="groove_inner_width"   value="19.0" />
+  <constant name="groove_outer_width"   value="27.0" />
 
 
 

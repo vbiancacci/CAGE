@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 i<!DOCTYPE gdml [
-<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
 <!ENTITY define_source SYSTEM "define_source.xml">
 ]>
-<!--
-<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
-<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
-<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
-<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
--->
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 #########################################	
  <define>
 	
-	 &define_IC50B;
- <!--
- &define_IC48A;
- &define_IC48B;
- &define_IC50B;
- &define_IC74A;
- -->
+	 &define_dimension;
 
 	 &define_source;
 
@@ -78,11 +66,6 @@ i<!DOCTYPE gdml [
 
  <solids>
 	 <box name="worldBox" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
-<!-- shieldBox  -->
-         <box name="shieldBox" lunit="m" x="0.2" y="0.2" z="0.2"/>
-
-<!-- cavityBox  -->
-         <box name="cavityBox" lunit="m" x="0.1" y="0.1" z="0.1"/>
 
 <!-- source -->
          <tube name="source" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
@@ -94,41 +77,15 @@ i<!DOCTYPE gdml [
 
  <structure>
 	 <volume name="Source">
-                 <materialref ref="Al"/>
+                 <materialref ref="G4_STAINLESS_STEEL"/>
                  <solidref ref="source"/>
          </volume>
-	 
-	 <volume name="Cavity">
-		 <solidref ref="cavityBox"/>
-		 <materialref ref="Vacuum"/>
-		 <!-- <physvol>
-			 <file name="crystal.gdml"/>
-			 <positionref ref="pos_crystal"/>
-		 </physvol> 
-		 <physvol>
-			 <file name="holder.gdml"/>
-			 <positionref ref="pos_holder"/>
-		 </physvol> 
-		 <physvol>
-			 <file name="assembly.gdml"/>
-			 <positionref ref="center"/>
-		 </physvol> -->
-	 </volume>
-	      
-	 <volume name="Shield">
-                 <materialref ref="Pb"/>
-                 <solidref ref="shieldBox"/>
-	</volume>
 
 	     <volume name="World">
-                 <materialref ref="Vacuum"/>
+                 <materialref ref="G4_AIR"/>
                  <solidref ref="worldBox"/>
-                 <physvol>
-                         <volumeref ref="Cavity"/>
-                         <positionref ref="center"/>
-		 </physvol>
 		 <physvol>
-                         <volumeref ref="Shield"/>
+                         <volumeref ref="shield.gdml"/>
                          <positionref ref="center"/>
                  </physvol>
 	         <physvol>

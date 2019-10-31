@@ -40,13 +40,13 @@
 /run/initialize
 
 #/vis/open OGLIX
-/vis/open HepRepXML
-/vis/scene/create g4simple
-/vis/viewer/set/autoRefresh false
-/vis/sceneHandler/attach
-/vis/scene/add/volume world
-/vis/scene/add/trajectories smooth
-/vis/scene/add/hits
+#/vis/open HepRepXML
+#/vis/scene/create g4simple
+#/vis/viewer/set/autoRefresh false
+#/vis/sceneHandler/attach
+#/vis/scene/add/volume world
+#/vis/scene/add/trajectories smooth
+#/vis/scene/add/hits
 
 # If you want to see the list of available NIST materials (e.g. to help you
 # build your gdml file) uncomment this line
@@ -58,24 +58,24 @@
 
 # Set up gps after /run/initialize
 # This is for 208Tl events distributed throughout the "source" volume
-/gps/particle gamma
-/gps/position 0 0 136.5 mm
-/gps/pos/type Point
-/gps/ene/mono 2.614 MeV
-/gps/direction 0 0 -1
+#/gps/particle gamma
+#/gps/position 0 0 136.5 mm
+#/gps/pos/type Point
+#/gps/ene/mono 2.614 MeV
+#/gps/direction 0 0 -1
 
-#/gps/particle ion
-#/gps/ion 81 208 0 0
-#/gps/energy 0 MeV
-#/gps/pos/shape Sphere
-#/gps/pos/radius 2 mm
-#/gps/pos/centre 0 0 136.5 mm 
+/gps/particle ion
+/gps/ion 81 208 0 0
+/gps/energy 0 MeV
+/gps/pos/shape Sphere
+/gps/pos/radius 2 mm
+/gps/pos/centre 0 0 136.5 mm 
 #/gps/pos/confine Source_PV
 #/gps/ang/type iso
 #/run/beamOn 100000
 
-/vis/scene/endOfEventAction accumulate 10
-/run/beamOn 10
-/vis/viewer/flush
-/vis/viewer/set/autoRefresh true
+#/vis/scene/endOfEventAction accumulate 100000
+/run/beamOn 100000
+#/vis/viewer/flush
+#/vis/viewer/set/autoRefresh true
 

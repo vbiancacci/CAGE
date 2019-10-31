@@ -44,11 +44,11 @@
   <quantity name="top_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
   <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
   
-  <quantity name="grooves_z" type="length" value="grooves_height" unit="mm"/>
-  <quantity name="grooves_minimum_radius" type="length" value="grooves_inner_width/2" unit="mm"/>
-  <quantity name="grooves_maximum_radius" type="length" value="grooves_outer_width/2" unit="mm"/>
+  <quantity name="groove_z" type="length" value="groove_height" unit="mm"/>
+  <quantity name="groove_minimum_radius" type="length" value="groove_inner_width/2" unit="mm"/>
+  <quantity name="groove_maximum_radius" type="length" value="groove_outer_width/2" unit="mm"/>
  
-  <position name="pos_grooves"  z="-(bottom_z-grooves_z+0.01)/2" />    <!-- 0.01 is required since the two solids lie precisely next to each other -->
+  <position name="pos_groove"  z="-(bottom_z-groove_z+0.01)/2" />    <!-- 0.01 is required since the two solids lie precisely next to each other -->
   <position name="pos_union"  z="(bottom_z+top_z)/2"/>
  
 
@@ -233,15 +233,15 @@
   
   	 <cone name="top" rmin1="top_inner_radius" rmax1="top_maximum_radius" rmin2="top_inner_radius" rmax2="top_minimum_radius" z="top_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <tube name="grooves" rmin="grooves_minimum_radius" rmax="grooves_maximum_radius" z="grooves_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+  	 <tube name="groove" rmin="groove_minimum_radius" rmax="groove_maximum_radius" z="groove_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  	 <subtraction name="bottom_grooves">
-		 <first ref="bottom"/> <second ref="grooves"/>
-		 <positionref ref="pos_grooves"/>
+  	 <subtraction name="bottom_groove">
+		 <first ref="bottom"/> <second ref="groove"/>
+		 <positionref ref="pos_groove"/>
  	 </subtraction>
 	 
 	 <union name="final_crystal">
-		 <first ref="bottom_grooves"/> <second ref="top"/>
+		 <first ref="bottom_groove"/> <second ref="top"/>
 		 <positionref ref="pos_union"/>
 	 </union>
 

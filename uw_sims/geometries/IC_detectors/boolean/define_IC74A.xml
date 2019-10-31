@@ -1,5 +1,5 @@
 
-###IC74A
+<!-- IC74A -->
 
 
   <constant name="HALFPI" value="pi/2."/>
@@ -11,26 +11,26 @@
   <rotation name="identity" x="0" y="0" z="0" />
   
   
-#############
-  CRYSTAL
-#############
+
+  <!--  CRYSTAL -->
+
 
   <constant name="crystal_height"   value="82.3" />
   <constant name="top_height"   value="52.4" />
-  <constant name="grooves_height"   value="2.0" />
+  <constant name="groove_height"   value="2.0" />
 
   <constant name="crystal_width"   value="76.6" />
   <constant name="top_width"   value="76.6" />
   <constant name="cavity_width"   value="10.5" />
-  <constant name="grooves_inner_width"   value="19.0" />
-  <constant name="grooves_outer_width"   value="27.0" />
+  <constant name="groove_inner_width"   value="19.0" />
+  <constant name="groove_outer_width"   value="27.0" />
 
 
 
 
-#############
-  HOLDER
-#############
+
+  <!--  HOLDER -->
+
 
   <constant name="holder_height"   value="133.5"/>
   <constant name="cylinder_outer_height"   value="108.1"/>
@@ -50,9 +50,9 @@
 
 
 
-#############
- ASSEMBLY 
-#############
+
+  <!-- ASSEMBLY -->
+
 
   <constant name="assembly_height"   value="170.0"/> 
   <constant name="assembly_cavity_height"   value="168.5"/> 
@@ -62,9 +62,9 @@
 
 
 
-#############
- POSITIONS
-#############
+ 
+  <!--  POSITIONS -->
+
   <constant name="position_crystal_fromTop"   value="7.0"/>
   <constant name="position_holder_fromTop"   value="6.0" />
 
