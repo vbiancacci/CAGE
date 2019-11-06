@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
 ]>
-
-
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 	
-##########################################
-
-#cylinder_height = height of detector rest
-#cylinder_radius = outer radius of detector rest
-
-##########################################
 
  <define>
 	
-	 &define_dimension;
+	 &define_IC50A;
   <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
   <quantity name="cylinder_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
 
@@ -49,7 +41,8 @@
  </define>
 
 
-##########################################
+
+
 
  <materials>
 	<material name="Al" Z="13.0" >
@@ -59,7 +52,8 @@
 
  </materials>
 
-##########################################
+
+
 
  <solids>
 	 <tube name="cylinder" rmax="cylinder_radius" z="cylinder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
@@ -103,37 +97,20 @@
 		 <positionref ref="pos_cavity"/>
 	 </subtraction>
 
-  
-  <multiUnion name="final2" >
-   <multiUnionNode name="node-1">
-   <solid ref="base" />
-   </multiUnionNode>
-   <multiUnionNode name="node-2">
-   <solid ref="ring" />
-   <positionref ref="pos_ring_bottom" />
-   </multiUnionNode>
-   <multiUnionNode name="node-3">
-   <solid ref="ring" />
-   <positionref ref="pos_ring_top" />
-   </multiUnionNode>
-   <multiUnionNode name="node-4">
-   <solid ref="edge" />
-   <positionref ref="pos_edge" />
-   </multiUnionNode>
-  </multiUnion>
-
  </solids>
 
-##########################################
+
+
 
  <structure>
 	 <volume name="Holder">
-		 <materialref ref="Al"/>
+		 <materialref ref="G4_Al"/>
 		 <solidref ref="final_holder"/>
 	 </volume>
  </structure>
 
-##########################################
+
+
 
  <setup name="Default" version="1.0">
 	 <world ref="Holder"/>

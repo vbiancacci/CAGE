@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
 ]>
-
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
-##########################################
-
-#cylinder_height = height of detector rest
-#cylinder_radius = outer radius of detector rest
-
-##########################################
 
  <define>
-	 &define_dimension;
+	 &define_IC50A;
 
 
-  <quantity name="bottom_z" type="length" value="crystal_height-top_height" unit="mm"/>
+  <quantity name="bottom_z" type="length" value="(crystal_height-top_height)" unit="mm"/>
   <quantity name="bottom_radius" type="length" value="crystal_width/2" unit="mm"/>
   
   <quantity name="top_z" type="length" value="top_height" unit="mm"/>
@@ -24,19 +17,50 @@
   <quantity name="top_maximum_radius" type="length" value="crystal_width/2" unit="mm" />
   <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
   
-  <quantity name="groove_z" type="length" value="grooves_height" unit="mm"/>
-  <quantity name="groove_minimum_radius" type="length" value="grooves_inner_width/2" unit="mm"/>
-  <quantity name="groove_maximum_radius" type="length" value="grooves_outer_width/2" unit="mm"/>
+  <quantity name="groove_z" type="length" value="groove_height" unit="mm"/>
+  <quantity name="groove_minimum_radius" type="length" value="groove_inner_width/2" unit="mm"/>
+  <quantity name="groove_maximum_radius" type="length" value="groove_outer_width/2" unit="mm"/>
  
   <position name="pos_groove"  z="-(bottom_z-groove_z+0.01)/2" />       <!-- 0.01 is required since the two solids lie precisely next to each other -->
   <position name="pos_union"  z="(bottom_z+top_z)/2"/> 
  
  </define>
 
-##########################################
 
- <materials>
-	 <isotope name="Ge76" Z="32" N="76">   <!-- improper germanium definition -->
+
+
+<materials>
+
+         <isotope name="Ge70" Z="32" N="70">
+                 <atom type="A" value="69.9243" />
+         </isotope>
+         <isotope name="Ge72" Z="32" N="72">
+                 <atom type="A" value="71.9221" />
+         </isotope>
+         <isotope name="Ge73" Z="32" N="73">
+                 <atom type="A" value="72.9235" />
+         </isotope>
+         <isotope name="Ge74" Z="32" N="74">
+                 <atom type="A" value="73.9212" />
+         </isotope>
+         <isotope name="Ge76" Z="32" N="76">
+                 <atom type="A" value="75.9214" />
+         </isotope>
+         <element name="enr_ge" formula="Ge" >     <!--from MaGe -->
+                 <fraction n="0.0000397" ref="Ge70" /> <!-- /1.00821 -->
+                 <fraction n="0.0000893" ref="Ge70" />
+                 <fraction n="0.000278" ref="Ge70" />
+                 <fraction n="0.1258" ref="Ge70" />
+                 <fraction n="0.8738" ref="Ge70" />
+         </element>
+         <material name="enriched_germanium" formula="Ge" >
+                 <D value="5.545" unit="g/cm3" />
+                 <fraction n="1.0" ref="enr_ge" />
+         </material>
+
+	 <!--
+
+	 <isotope name="Ge76" Z="32" N="76">   
 	 </isotope>
 	 <isotope name="Ge36" Z="32" N="36">
 	 </isotope>
@@ -45,10 +69,12 @@
 		 <D value="5.323" unit="mg/cm3"/>
 		 <fraction ref="Ge76" n="0.9" />
 		 <fraction ref="Ge36" n="0.1" />
-	 </material>
+	 </material> -->
  </materials>
 
-##########################################
+
+
+
 
  <solids>
 	 <tube name="bottom" rmax="bottom_radius" z="bottom_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
@@ -68,7 +94,9 @@
 	 </union>
  </solids>
 
-##########################################
+
+
+
 
  <structure>
 	 <volume name="Crystal">
@@ -77,7 +105,9 @@
 	 </volume>
  </structure>
 
-##########################################
+
+
+
 
  <setup name="Default" version="1.0">
 	 <world ref="Crystal"/>

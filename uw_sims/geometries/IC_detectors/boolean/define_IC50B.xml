@@ -49,14 +49,14 @@
 
 
 
-  <!--  ASSEMBLY --> 
+  <!--  SHIELD --> 
 
 
-  <constant name="assembly_height"   value="170.0"/> 
-  <constant name="assembly_cavity_height"   value="168.5"/> 
+  <constant name="shield_height"   value="170.0"/> 
+  <constant name="shield_cavity_height"   value="168.5"/> 
 
-  <constant name="assembly_width"   value="101.6"/> 
-  <constant name="assembly_cavity_width"   value="98.6"/> 
+  <constant name="shield_width"   value="101.6"/> 
+  <constant name="shield_cavity_width"   value="98.6"/> 
 
 
 

@@ -1,42 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-i<!DOCTYPE gdml [
-<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!DOCTYPE gdml [
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
 <!ENTITY define_source SYSTEM "define_source.xml">
 ]>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
-#########################################	
  <define>
 	
-	 &define_dimension;
+	 &define_IC50A;
 
 	 &define_source;
 
-###positions  <!-- when positioning a volume associated to a Boolean solid, the relative center of coordinates considered for the positioning is the one related to the first of the two constituent solids -->
+ <!-- when positioning a volume associated to a Boolean solid, the relative center of coordinates considered for the positioning is the one related to the first of the two constituent solids -->
 
 
   <quantity name="source_z" type="length" value="source_height" unit="mm"/>
   <quantity name="source_radius" type="length" value="source_width/2" unit="mm"/>
 
+  <quantity name="pos_shield" value="(265-101)" type="lenght"  unit="mm" /> 
 
-  <quantity name="bottom_z" type="length" value="crystal_height-top_height" unit="mm"/>
+  <quantity name="bottom_z" type="length" value="(crystal_height-top_height)" unit="mm"/>
   <quantity name="top_z" type="length" value="top_height" unit="mm"/>
 
   <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
 
-  <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>
+  <quantity name="shield_z" type="length" value="shield_height" unit="mm"/>
   
   <quantity name="pos_source_fromAssembly" type="length" value="position_source_fromAssembly" unit="cm"/>
   <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/> 
   <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/> 
 
-  <position name="pos_source"  z="(assembly_z+source_z)/2+pos_source_fromAssembly" />
-  <position name="pos_crystal" z="(assembly_z-bottom_z)/2-top_z-pos_crystal_fromTop" />
-  <position name="pos_holder" z="(assembly_z-cylinder_z)/2-pos_holder_fromTop"  />
+  <position name="pos_source"  z="(shield_z+source_z)/2+pos_source_fromAssembly" />
+  <position name="pos_crystal" z="(shield_z-bottom_z)/2-top_z-pos_crystal_fromTop" />
+  <position name="pos_holder" z="(shield_z-cylinder_z)/2-pos_holder_fromTop"  />
+
+
+  <quantity name="bottom_plate_height" type="length" value="15" unit="mm"/>
+  <position name="pos_bottom_plate" z="-(shield_z+pos_shield+bottom_plate_height)/2" />
+  
+  <quantity name="lead_castle_table1_height" type="length" value="500" unit="mm"/>
+  <position name="pos_lead_castle_table1" z="-(shield_z+pos_shield-lead_castle_table1_height)/2" />
+  
+  <quantity name="lead_castle_table2_height" type="length" value="300" unit="mm"/>
+  <position name="pos_lead_castle_table2" z="-(shield_z+pos_shield-lead_castle_table2_height)/2" />
+  
+  <quantity name="copper_plate_height" type="length" value="10" unit="mm"/>
+  <position name="pos_copper_plate" z="lead_castle_table2_height-(shield_z+pos_shield)/2+copper_plate_height/2" />
 
  </define>
 
-##########################################
+
+
 
  <materials>
      <element Z="7" formula="N" name="Nitrogen" >
@@ -62,7 +76,10 @@ i<!DOCTYPE gdml [
 
  </materials>
 
-##########################################
+
+
+
+
 
  <solids>
 	 <box name="worldBox" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
@@ -73,11 +90,13 @@ i<!DOCTYPE gdml [
 
  </solids>
 
-##########################################
+
+
+
 
  <structure>
 	 <volume name="Source">
-                 <materialref ref="G4_STAINLESS_STEEL"/>
+                 <materialref ref="G4_STAINLESS-STEEL"/>
                  <solidref ref="source"/>
          </volume>
 
@@ -85,13 +104,26 @@ i<!DOCTYPE gdml [
                  <materialref ref="G4_AIR"/>
                  <solidref ref="worldBox"/>
 		 <physvol>
-                         <volumeref ref="shield.gdml"/>
-                         <positionref ref="center"/>
+                         <file name="bottom_plate.gdml"/>
+			 <positionref ref="pos_bottom_plate"/>
+		 </physvol>
+		 
+		 <physvol>
+                         <file name="lead_castle_table1.gdml"/>
+			 <positionref ref="pos_lead_castle_table1"/>
+		 </physvol>  
+		 <!--<physvol>
+                         <file name="lead_castle_table2.gdml"/>
+			 <positionref ref="pos_lead_castle_table2"/>
                  </physvol>
-	         <physvol>
+		 <physvol>
+                         <file name="copper_plate_table2.gdml"/>
+			 <positionref ref="pos_copper_plate"/>
+		 </physvol>--> 
+		 <physvol> 
                          <volumeref ref="Source"/>
                          <positionref ref="pos_source"/>
-                 </physvol>
+		 </physvol>
 
 		 <physvol>
 			 <file name="crystal.gdml"/>
@@ -100,16 +132,17 @@ i<!DOCTYPE gdml [
 		  <physvol>
 			 <file name="holder.gdml"/>
 			 <positionref ref="pos_holder"/>
-		 </physvol> 
+		 </physvol>
 		 <physvol>
-			 <file name="assembly.gdml"/>
+			 <file name="shield.gdml"/>
 			 <positionref ref="center"/>
-		 </physvol> 
+		 </physvol>
 	 </volume>
 
  </structure>
 
-##########################################
+
+
 
  <setup name="Default" version="1.0">
 	 <world ref="World"/>

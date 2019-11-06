@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_material SYSTEM "define_material.xml">
+]>
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+  <quantity name="base_thickness" type="lenght" value="350" unit="mm" />
+  <quantity name="base_width" type="length" value="350" unit="mm"/>
+  <quantity name="base_height" type="length" value="300" unit="mm"/>
+
+  <quantity name="cavity_thickness" type="length" value="250" unit="mm"/>
+  <quantity name="cavity_width" type="length" value="250" unit="mm"/>
+  <quantity name="cavity_height" type="length" value="300+0.01" unit="mm"/>
+
+  <quantity name="top_thickness" type="length" value="200" unit="mm"/>
+  <quantity name="top_width" type="length" value="200" unit="mm"/>
+  <quantity name="top_height" type="length" value="50" unit="mm"/>
+
+  <quantity name="copper_plate_height" type="length" value="10" unit="mm"/>
+  
+  <position name="pos_top" z="(base_height+top_height)/2+copper_plate_height" />
+
+   </define>
+
+
+
+
+ <materials>
+
+	 <!--	 &define_material;  -->
+
+      	 <material name="Pb" Z="82" >
+                 <D value="11.35" />
+                 <atom value="207.2" />
+         </material>
+
+	
+ </materials>
+
+
+
+
+ <solids>
+ 	 <box name="base_lead_castle" x="base_thickness" y="base_width" z="base_height"/>
+ 	 <box name="cavity_lead_castle" x="cavity_thickness" y="cavity_width" z="cavity_height"/>
+	 <box name="top_lead_castle" x="top_thickness" y="top_width" z="top_height"/>
+	 
+	 <subtraction name="base_cavity" >
+		 <first ref="base_lead_castle"/> <second ref="cavity_lead_castle"/>
+		 <positionref ref="pos_cavity" />
+	 </subtraction>
+
+	 <union name="top_base" >
+		 <first ref="base_cavity"/> <second ref="top_lead_castle"/>
+		 <positionref ref="pos_top" />
+	 </union>
+
+
+
+ </solids>
+
+
+
+
+<structure>
+	 <volume name="Lead_castle">
+		 <materialref ref="G4_Pb"/>
+		 <solidref ref="top_base"/>
+	 </volume>
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Lead_castle"/>
+ </setup>
+
+</gdml>
+

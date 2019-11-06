@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_material SYSTEM "define_material.xml">
+]>
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+  <quantity name="bottom_plate_width" type="length" value="750" unit="mm"/>
+  <quantity name="bottom_plate_thickness" type="length" value="750" unit="mm"/> 
+  <quantity name="bottom_plate_height" type="length" value="15" unit="mm"/>
+
+  <quantity name="cavity_bottom_plate_width" type="length" value="120" unit="mm"/>
+  <quantity name="cavity_bottom_plate_thickness" type="length" value="475" unit="mm"/>
+  <quantity name="cavity_bottom_plate_height" type="length" value="15+0.001" unit="mm"/>
+
+  <position name="pos_cavity_bottom_plate" x="(bottom_plate_thickness-cavity_bottom_plate_thickness+0.01)/2" />
+
+   </define>
+
+
+
+
+ <materials>
+
+	 <!--	 &define_material;  -->
+	
+	 <material name="Al" Z="13.0" >
+                 <D value="2.70" unit="g/cm3" />
+                 <atom value="26.98" />
+         </material>
+
+
+	
+ </materials>
+
+
+
+
+ <solids>
+         <box name="bottom_plate" x="bottom_plate_thickness" y="bottom_plate_width" z="bottom_plate_height"/>
+         <box name="cavity_bottom_plate" x="cavity_bottom_plate_thickness" y="cavity_bottom_plate_width" z="cavity_bottom_plate_height"/>
+	 
+         <subtraction name="final_bottom_plate" >
+                 <first ref="bottom_plate"/> <second ref="cavity_bottom_plate"/>
+                 <positionref ref="pos_cavity_bottom_plate" />
+         </subtraction>
+
+ </solids>
+
+
+<structure>
+	 <volume name="Bottom_plate">
+		 <materialref ref="G4_Al"/>
+		 <solidref ref="final_bottom_plate"/>
+	 </volume>
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Bottom_plate"/>
+ </setup>
+
+</gdml>
+
