@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_material SYSTEM "define_material.xml">
+<!ENTITY define_lead_castle SYSTEM "define_lead_castle.xml">
 ]>
 
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 
  <define>
-  <quantity name="base_thickness" type="lenght" value="350" unit="mm" />
-  <quantity name="base_width" type="length" value="350" unit="mm"/>
-  <quantity name="base_height" type="length" value="300" unit="mm"/>
 
-  <quantity name="cavity_thickness" type="length" value="250" unit="mm"/>
-  <quantity name="cavity_width" type="length" value="250" unit="mm"/>
-  <quantity name="cavity_height" type="length" value="300+0.01" unit="mm"/>
+	&define_lead_castle;
 
-  <quantity name="top_thickness" type="length" value="200" unit="mm"/>
-  <quantity name="top_width" type="length" value="200" unit="mm"/>
-  <quantity name="top_height" type="length" value="50" unit="mm"/>
-
-  <quantity name="copper_plate_height" type="length" value="10" unit="mm"/>
+  <quantity name="base_x_2" type="length" value="base_width_2" unit="mm" />
+  <quantity name="base_y_2" type="length" value="base_depth_2" unit="mm"/>
+  <quantity name="base_z_2" type="length" value="base_height_2" unit="mm"/>
   
-  <position name="pos_top" z="(base_height+top_height)/2+copper_plate_height" />
+  <quantity name="inner_cavity_x_2" type="length" value="inner_cavity_width_2" unit="mm"/>
+  <quantity name="inner_cavity_y_2" type="length" value="inner_cavity_depth_2" unit="mm"/>
+  <quantity name="inner_cavity_z_2" type="length" value="inner_cavity_height_2+0.01" unit="mm"/>
+  
+  <quantity name="top_x_2" type="length" value="top_width_2" unit="mm"/>
+  <quantity name="top_y_2" type="length" value="top_depth_2" unit="mm"/>
+  <quantity name="top_z_2" type="length" value="top_height_2" unit="mm"/>
+
+  <quantity name="copper_plate_z" type="length" value="copper_plate_height" unit="mm"/>
+  
+  <position name="center" x="0" y="0" z="0" />
+  <position name="pos_top" z="(base_z_2+top_z_2)/2+copper_plate_z" />
 
    </define>
 
@@ -29,8 +33,6 @@
 
 
  <materials>
-
-	 <!--	 &define_material;  -->
 
       	 <material name="Pb" Z="82" >
                  <D value="11.35" />
@@ -44,17 +46,17 @@
 
 
  <solids>
- 	 <box name="base_lead_castle" x="base_thickness" y="base_width" z="base_height"/>
- 	 <box name="cavity_lead_castle" x="cavity_thickness" y="cavity_width" z="cavity_height"/>
-	 <box name="top_lead_castle" x="top_thickness" y="top_width" z="top_height"/>
+ 	 <box name="base_lead_castle_2" x="base_x_2" y="base_y_2" z="base_z_2"/>
+	 <box name="inner_cavity_lead_castle_2" x="inner_cavity_x_2" y="inner_cavity_y_2" z="inner_cavity_z_2"/>
+	 <box name="top_lead_castle_2" x="top_x_2" y="top_y_2" z="top_z_2"/>
 	 
-	 <subtraction name="base_cavity" >
-		 <first ref="base_lead_castle"/> <second ref="cavity_lead_castle"/>
-		 <positionref ref="pos_cavity" />
+	 <subtraction name="base_cavity_2" >
+		 <first ref="base_lead_castle_2"/> <second ref="inner_cavity_lead_castle_2"/>
+		 <positionref ref="center" />
 	 </subtraction>
 
-	 <union name="top_base" >
-		 <first ref="base_cavity"/> <second ref="top_lead_castle"/>
+	 <union name="final_lead_castle_2" >
+		 <first ref="base_cavity_2"/> <second ref="top_lead_castle_2"/>
 		 <positionref ref="pos_top" />
 	 </union>
 
@@ -68,7 +70,7 @@
 <structure>
 	 <volume name="Lead_castle">
 		 <materialref ref="G4_Pb"/>
-		 <solidref ref="top_base"/>
+		 <solidref ref="final_lead_castle_2"/>
 	 </volume>
  </structure>
 

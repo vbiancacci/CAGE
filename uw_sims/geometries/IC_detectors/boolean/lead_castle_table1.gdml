@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_material SYSTEM "define_material.xml">
+<!ENTITY define_lead_castle SYSTEM "define_lead_castle.xml">
 ]>
 
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 
  <define>
-		
-  <constant name="TWOPI" value="2.*pi"/>
 
-  <quantity name="base_thickness" type="lenght" value="450" unit="mm" />
-  <quantity name="base_width" type="length" value="480" unit="mm"/>
-  <quantity name="base_height" type="lenght" value="500" unit="mm" />
+	 &define_lead_castle;
 
-  <quantity name="inner_cavity_thickness" type="length" value="250" unit="mm"/>
-  <quantity name="inner_cavity_width" type="length" value="280" unit="mm"/>
-  <quantity name="inner_cavity_height" type="length" value="500+0.01" unit="mm"/>
+  <quantity name="base_x_1" type="length" value="base_width_1" unit="mm" />
+  <quantity name="base_y_1" type="length" value="base_depth_1" unit="mm"/>
+  <quantity name="base_z_1" type="length" value="base_height_1" unit="mm"/>
 
-  <quantity name="cavity_thickness" type="length" value="100+0.01" unit="mm"/>
-  <quantity name="cavity_width" type="length" value="120" unit="mm"/>
-  <quantity name="cavity_height" type="length" value="400" unit="mm"/>
+  <quantity name="inner_cavity_x_1" type="length" value="inner_cavity_width_1" unit="mm"/>
+  <quantity name="inner_cavity_y_1" type="length" value="inner_cavity_depth_1" unit="mm"/>
+  <quantity name="inner_cavity_z_1" type="length" value="inner_cavity_height_1+0.01" unit="mm"/>
 
-  <quantity name="top_thickness" type="length" value="300" unit="mm"/>
-  <quantity name="top_width" type="length" value="250" unit="mm"/>
-  <quantity name="top_height" type="length" value="100" unit="mm"/>
+  <quantity name="cavity_x_1" type="length" value="cavity_width_1" unit="mm"/>
+  <quantity name="cavity_y_1" type="length" value="cavity_depth_1" unit="mm"/>
+  <quantity name="cavity_z_1" type="length" value="cavity_height_1" unit="mm"/>
+  
+  <quantity name="top_x_1" type="length" value="top_width_1" unit="mm"/>
+  <quantity name="top_y_1" type="length" value="top_depth_1" unit="mm"/>
+  <quantity name="top_z_1" type="length" value="top_height_1" unit="mm"/>
 
-  <quantity name="front_thickness" type="length" value="100" unit="mm"/>
-  <quantity name="front_width" type="length" value="160" unit="mm"/>
-  <quantity name="front_height" type="length" value="400" unit="mm"/>
+  <quantity name="front_x_1" type="length" value="front_width_1" unit="mm"/>
+  <quantity name="front_y_1" type="length" value="front_depth_1" unit="mm"/>
+  <quantity name="front_z_1" type="length" value="front_height_1" unit="mm"/>
 
-  <position name="pos_cavity_base" x="(inner_cavity_thickness/2+(base_thickness-inner_cavity_thickness)/4)" z="-(inner_cavity_height-cavity_height)/2-0.01" />
-  <position name="pos_top" z="(base_height+top_height)/2" />
- 
-  <position name="pos_front" x="(base_thickness+front_thickness)/2" z="-(base_height-front_height)/2" />
+
+
+  <position name="pos_cavity_base_1" y="(inner_cavity_y_1/2+(base_y_1-inner_cavity_y_1)/4)" z="-(inner_cavity_z_1-cavity_z_1)/2-0.01" />
+  <position name="pos_top_1" z="(base_z_1+top_z_1)/2" />
+  <position name="pos_front_1" y="(base_y_1+front_y_1)/2" z="-(base_z_1-front_z_1)/2" />
   
   <position name="center" x="0" y="0" z="0" />
-
-  <rotation name="rot_cavity_base" z="pi/2" unit="rad" />
 
  </define>
 
@@ -60,31 +59,31 @@
 
  <solids>
 
-	 <box name="base_lead_castle" x="base_thickness" y="base_width" z="base_height"/>
-	 <box name="inner_cavity_base" x="inner_cavity_thickness" y="inner_cavity_width" z="inner_cavity_height"/>
-	 <box name="cavity_base" x="cavity_thickness" y="cavity_width" z="cavity_height"/>
-	 <box name="front" x="front_thickness" y="front_width" z="front_height"/>
+	 <box name="base_lead_castle_1" x="base_x_1" y="base_y_1" z="base_z_1"/>
+	 <box name="inner_cavity_base_1" x="inner_cavity_x_1" y="inner_cavity_y_1" z="inner_cavity_z_1"/>
+	 <box name="cavity_base_1" x="cavity_x_1" y="cavity_y_1" z="cavity_z_1"/>
+	 <box name="top_lead_castle_1" x="top_x_1" y="top_y_1" z="top_z_1"/>
+	 <box name="front_1" x="front_x_1" y="front_y_1" z="front_z_1"/>
 	 
-	 <union name="total_cavity" >
-		 <first ref="inner_cavity_base"/> <second ref="cavity_base"/>
-		 <positionref ref="pos_cavity_base" />
+	 <union name="total_cavity_1" >
+		 <first ref="inner_cavity_base_1"/> <second ref="cavity_base_1"/>
+		 <positionref ref="pos_cavity_base_1" />
 	 </union>
 	 
-	 <subtraction name="base_cavity" >
-		 <first ref="base_lead_castle"/> <second ref="total_cavity"/>
+	 <subtraction name="base_cavity_1" >
+		 <first ref="base_lead_castle_1"/> <second ref="total_cavity_1"/>
 		 <positionref ref="center" />
 	 </subtraction>
 	
-	 <box name="top_lead_castle" x="top_thickness" y="top_width" z="top_height"/>
 
-	 <union name="top_base" >
-		 <first ref="base_cavity"/> <second ref="top_lead_castle"/>
-		 <positionref ref="pos_top" />
+	 <union name="top_base_1" >
+		 <first ref="base_cavity_1"/> <second ref="top_lead_castle_1"/>
+		 <positionref ref="pos_top_1" />
 	 </union>  
 	 
-	 <union name="final_lead_castle" >
-		 <first ref="top_base"/> <second ref="front"/>
-		 <positionref ref="pos_front" />
+	 <union name="final_lead_castle_1" >
+		 <first ref="top_base_1"/> <second ref="front_1"/>
+		 <positionref ref="pos_front_1" />
 	 </union>  
 
  </solids>
@@ -95,7 +94,7 @@
 <structure>
 	 <volume name="Lead_castle">
 		 <materialref ref="G4_Pb"/>
-		 <solidref ref="final_lead_castle"/>
+		 <solidref ref="final_lead_castle_1"/>
 	 </volume>
  </structure>
 

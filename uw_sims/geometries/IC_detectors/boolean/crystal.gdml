@@ -30,7 +30,7 @@
 
 
 <materials>
-
+	<!--
          <isotope name="Ge70" Z="32" N="70">
                  <atom type="A" value="69.9243" />
          </isotope>
@@ -45,20 +45,20 @@
          </isotope>
          <isotope name="Ge76" Z="32" N="76">
                  <atom type="A" value="75.9214" />
-         </isotope>
-         <element name="enr_ge" formula="Ge" >     <!--from MaGe -->
-                 <fraction n="0.0000397" ref="Ge70" /> <!-- /1.00821 -->
-                 <fraction n="0.0000893" ref="Ge70" />
-                 <fraction n="0.000278" ref="Ge70" />
-                 <fraction n="0.1258" ref="Ge70" />
-                 <fraction n="0.8738" ref="Ge70" />
-         </element>
+	 </isotope> 
+	 <element name="enr_ge" formula="Ge" >    --> <!--from MaGe    /1.00821    -->
+	<!--	 <fraction n="0.0000397" ref="Ge70" />  
+		 <fraction n="0.0000893" ref="Ge72" />
+                 <fraction n="0.000278" ref="Ge73" />
+                 <fraction n="0.1258" ref="Ge74" />
+                 <fraction n="0.8738" ref="Ge76" /> 
+	 </element>
          <material name="enriched_germanium" formula="Ge" >
                  <D value="5.545" unit="g/cm3" />
                  <fraction n="1.0" ref="enr_ge" />
-         </material>
-
-	 <!--
+	 </material>
+	 -->
+	 
 
 	 <isotope name="Ge76" Z="32" N="76">   
 	 </isotope>
@@ -69,7 +69,7 @@
 		 <D value="5.323" unit="mg/cm3"/>
 		 <fraction ref="Ge76" n="0.9" />
 		 <fraction ref="Ge36" n="0.1" />
-	 </material> -->
+	 </material>
  </materials>
 
 

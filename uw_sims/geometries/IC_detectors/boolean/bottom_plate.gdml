@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_material SYSTEM "define_material.xml">
+<!ENTITY define_lead_castle SYSTEM "define_lead_castle.xml">
 ]>
 
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 
  <define>
-  <quantity name="bottom_plate_width" type="length" value="750" unit="mm"/>
-  <quantity name="bottom_plate_thickness" type="length" value="750" unit="mm"/> 
-  <quantity name="bottom_plate_height" type="length" value="15" unit="mm"/>
 
-  <quantity name="cavity_bottom_plate_width" type="length" value="120" unit="mm"/>
-  <quantity name="cavity_bottom_plate_thickness" type="length" value="475" unit="mm"/>
-  <quantity name="cavity_bottom_plate_height" type="length" value="15+0.001" unit="mm"/>
+	&define_lead_castle;		
 
-  <position name="pos_cavity_bottom_plate" x="(bottom_plate_thickness-cavity_bottom_plate_thickness+0.01)/2" />
+  <quantity name="bottom_plate_x" type="length" value="bottom_plate_width" unit="mm"/>
+  <quantity name="bottom_plate_y" type="length" value="bottom_plate_depth" unit="mm"/> 
+  <quantity name="bottom_plate_z" type="length" value="bottom_plate_height" unit="mm"/>
+
+  <quantity name="cavity_bottom_plate_x" type="length" value="cavity_bottom_plate_width" unit="mm"/>
+  <quantity name="cavity_bottom_plate_y" type="length" value="cavity_bottom_plate_depth" unit="mm"/>
+  <quantity name="cavity_bottom_plate_z" type="length" value="cavity_bottom_plate_height+0.001" unit="mm"/>
+
+  <position name="pos_cavity_bottom_plate" y="(bottom_plate_y-cavity_bottom_plate_y+0.01)/2" />
 
    </define>
 
@@ -39,8 +42,8 @@
 
 
  <solids>
-         <box name="bottom_plate" x="bottom_plate_thickness" y="bottom_plate_width" z="bottom_plate_height"/>
-         <box name="cavity_bottom_plate" x="cavity_bottom_plate_thickness" y="cavity_bottom_plate_width" z="cavity_bottom_plate_height"/>
+         <box name="bottom_plate" x="bottom_plate_x" y="bottom_plate_y" z="bottom_plate_z"/>
+         <box name="cavity_bottom_plate" x="cavity_bottom_plate_x" y="cavity_bottom_plate_y" z="cavity_bottom_plate_z"/>
 	 
          <subtraction name="final_bottom_plate" >
                  <first ref="bottom_plate"/> <second ref="cavity_bottom_plate"/>

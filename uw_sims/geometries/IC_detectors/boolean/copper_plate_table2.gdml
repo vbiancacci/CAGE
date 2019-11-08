@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <!DOCTYPE gdml [
-<!ENTITY define_material SYSTEM "define_material.xml">
+<!ENTITY define_lead_castle SYSTEM "define_lead_castle.xml">
 ]>
 
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 
  <define>
-  <quantity name="copper_plate_thickness" type="length" value="350" unit="mm"/>
-  <quantity name="copper_plate_width" type="length" value="350" unit="mm"/>
-  <quantity name="copper_plate_height" type="length" value="10" unit="mm"/>
 
-   </define>
+	  &define_lead_castle; 
+
+  <quantity name="copper_plate_x" type="length" value="copper_plate_width" unit="mm"/>
+  <quantity name="copper_plate_y" type="length" value="copper_plate_depth" unit="mm"/>
+  <quantity name="copper_plate_z" type="length" value="copper_plate_height" unit="mm"/>
+
+ </define>
 
 
 
 
  <materials>
 
-	 <!--	 &define_material;  -->
 	
 	 <material name="Cu" Z="29" >
                  <D value="8.96" unit="g/cm3" />
@@ -33,7 +35,7 @@
 
 
  <solids>
-         <box name="copper_plate" x="copper_plate_thickness" y="copper_plate_width" z="copper_plate_height"/>
+         <box name="copper_plate" x="copper_plate_x" y="copper_plate_y" z="copper_plate_z"/>
 
  </solids>
 

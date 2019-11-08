@@ -4,7 +4,7 @@ void detector_draw()
   //gStyle->SetOptStat(0);
   //gStyle->SetOptTitle(0);
 
-  TFile* file = TFile::Open("detector_out_bismuto.root");
+  TFile* file = TFile::Open("detector_out_colors.root");
   TTree* tree = (TTree*) file->Get("g4sntuple");
  
 /*
