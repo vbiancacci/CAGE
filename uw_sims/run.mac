@@ -7,7 +7,7 @@
 /g4simple/setReferencePhysList Shielding
 #/physics_engine/tailor/MuonNuclear on
 
-/g4simple/setDetectorGDML geometries/Plastic_Collimator.gdml
+/g4simple/setDetectorGDML geometries/IC_detectors/total.gdml
 
 /g4simple/setOutputFormat root
 /analysis/setFileName out

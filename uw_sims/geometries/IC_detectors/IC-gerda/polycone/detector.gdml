@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_source SYSTEM "define_source.xml">
+<!ENTITY define_material SYSTEM "define_material.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+ <define>
+	
+	 &define_dimension;
+ <!--
+ &define_IC48A;
+ &define_IC48B;
+ &define_IC50B;
+ &define_IC74A;
+ -->
+
+	 &define_source;
+
+
+
+  <quantity name="source_z" type="length" value="source_height" unit="mm"/>
+  <quantity name="source_radius" type="length" value="source_width/2" unit="mm"/>
+
+
+  <quantity name="bottom_z" type="length" value="(crystal_height-top_height)" unit="mm"/>
+  <quantity name="top_z" type="length" value="top_height" unit="mm"/>
+
+  <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
+
+  <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>
+  
+  <quantity name="pos_source_fromAssembly" type="length" value="position_source_fromAssembly" unit="cm"/>
+  <quantity name="pos_crystal_fromTop" type="lenght" value="position_crystal_fromTop" unit="mm"/> 
+  <quantity name="pos_holder_fromTop" type="lenght" value="position_holder_fromTop" unit="mm"/> 
+
+  <position name="pos_source"  z="pos_source_fromAssembly" />
+  <position name="pos_crystal" z="pos_crystal_fromTop" />
+  <position name="pos_holder" z="pos_holder_fromTop"  />
+
+ </define>
+
+
+
+
+ <materials>
+
+	 <!--	 &define_material;  -->
+
+	
+         <element Z="7" formula="N" name="Nitrogen" >
+                 <atom value="14.01" />
+         </element>
+         <element Z="8" formula="O" name="Oxygen" >
+                 <atom value="16" />
+         </element>
+
+	 <material formula="air" name="Air" >
+                 <D value="0.0012899" />
+                 <fraction n="0.7" ref="Nitrogen" />
+                 <fraction n="0.3" ref="Oxygen" />
+         </material>
+
+         <material formula="vacuum" name="Vacuum" >
+                 <D value="6.24151e-07" unit="g/cm3"/>  
+                 <composite n="2" ref="Nitrogen" />
+                 <composite n="2" ref="Oxygen" />
+         </material>
+
+	 <material name="Pb" Z="82" >
+                 <D value="11.35" />
+                 <atom value="207.2" />
+         </material>
+
+         <element Z="26" formula="Fe" name="Iron" >
+                 <atom value="55.94" />
+         </element>
+         <element Z="24" formula="Cr" name="Chromium" >
+                 <atom value="51.99" />
+         </element>
+         <element Z="28" formula="Ni" name="Nichel" >
+                 <atom value="58.69" />
+         </element>
+         <material name="Stainless_steel" formula="S_steel" >
+                 <D value="8" unit="g/cm3" />
+                 <fraction n="0.74" ref="Iron" />
+                 <fraction n="0.18" ref="Chromium" />
+                 <fraction n="0.08" ref="Nichel" />
+         </material>
+
+
+ </materials>
+
+
+
+
+ <solids>
+	 <box name="worldBox" lunit="m" x="2000.0" y="2000.0" z="2000.0"/>
+
+<!-- source -->
+         <tube name="source" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+
+ </solids>
+
+
+
+
+ <structure>
+	 <volume name="Source">
+                 <materialref ref="Stainless_steel"/>
+                 <solidref ref="source"/>
+         </volume>
+	      
+	     <volume name="World">
+                 <materialref ref="Air"/>
+                 <solidref ref="worldBox"/>
+		 <physvol>
+                         <file name="shield.gdml"/>
+                         <positionref ref="center"/>
+                 </physvol>
+	         <physvol>
+                         <volumeref ref="Source"/>
+                         <positionref ref="pos_source"/>
+                 </physvol>
+
+		 <physvol>
+			 <file name="crystal.gdml"/>
+			 <positionref ref="pos_crystal"/>
+		 </physvol> 
+		  <physvol>
+			 <file name="holder.gdml"/>
+			 <positionref ref="pos_holder"/>
+		 </physvol> 
+		 <physvol>
+			 <file name="assembly.gdml"/>
+			 <positionref ref="center"/>
+		 </physvol> 
+	 </volume>  
+
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="World"/>
+ </setup>
+</gdml>
+

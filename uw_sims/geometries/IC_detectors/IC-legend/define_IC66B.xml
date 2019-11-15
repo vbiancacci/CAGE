@@ -1,0 +1,69 @@
+
+<!--I02166B-->
+  
+  <constant name="PI" value="1.*pi"/>
+  <constant name="TWOPI" value="2.*pi"/>
+
+
+  <position name="center" x="0" y="0" z="0"/>
+  <rotation name="identity" x="0" y="0" z="0" />
+  
+  
+
+  <!--  CRYSTAL -->
+
+
+  <constant name="crystal_height"   value="95.5" />
+  <constant name="cavity_height"   value="61.6" />
+  <constant name="groove_height"   value="2.0" />
+
+  <constant name="top_width"   value="80.0" />
+  <constant name="bottom_width"   value="80.1" />
+  <constant name="cavity_width"   value="8.5" />
+  <constant name="groove_inner_width"   value="19.3" />
+  <constant name="groove_outer_width"   value="27.7" />
+
+
+
+
+
+ <!--  HOLDER -->
+
+  <constant name="holder_height"   value="133.5"/>
+  <constant name="cylinder_outer_height"   value="108.1"/>
+  <constant name="cylinder_inner_height"   value="105.0"/>
+  <constant name="ring_height"   value="8.6" />
+  <constant name="edge_height"   value="1.3" />
+ 
+  <constant name="position_bottom_ring_fromTop"   value="64.4"/>
+  <constant name="position_top_ring_fromTop"   value="14.0" />
+  <constant name="position_bottom_cavity_fromTop"   value="124.0" />
+ 
+  <constant name="holder_width"   value="89.0" />
+  <constant name="cylinder_outer_width"   value="84.6" />
+  <constant name="cylinder_inner_width"   value="83.0" />
+  <constant name="bottom_cavity_width"   value="15.9" />
+  <constant name="bottom_cylinder_width"   value="26.0" />
+
+
+
+
+ <!-- SHIELD --> 
+
+
+  <constant name="shield_height"   value="170.0"/> 
+  <constant name="shield_cavity_height"   value="168.5"/> 
+
+  <constant name="shield_width"   value="101.6"/> 
+  <constant name="shield_cavity_width"   value="98.6"/> 
+
+
+
+
+  <!-- POSITIONS --> 
+
+  <constant name="position_crystal_fromTop"   value="7.0"/>
+  <constant name="position_holder_fromTop"   value="6.0" />
+
+  <constant name="position_shield_fromBottom" value="265.0" />
+

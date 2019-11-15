@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_material SYSTEM "define_material.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+
+
+ &define_dimension;
+ <!--
+ &define_IC48A;
+ &define_IC48B;
+ &define_IC50B;
+ &define_IC74A;
+ -->
+
+
+  <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>
+  <quantity name="assembly_radius" type="length" value="assembly_width/2" unit="mm"/>
+  
+  <quantity name="start_cavity_z" type="length" value="position_assembly_cavity_fromTop" unit="mm"/>
+  <quantity name="assembly_cavity_radius" type="length" value="(assembly_width-assembly_thickness)/2" unit="mm"/>
+  
+ </define>
+
+ <materials>
+
+	 <!--	&define_material; -->
+       
+	<material name="Al" Z="13.0" >
+         <D value="2.70" unit="g/cm3" />
+         <atom value="26.98" />
+        </material>
+
+ </materials>
+
+
+ <solids>
+         <polycone name="assembly" startphi="0" deltaphi="TWOPI" aunit="rad">
+                 <zplane rmin="0" rmax="assembly_radius" z="0" />
+                 <zplane rmin="0" rmax="assembly_radius" z="start_cavity_z" />
+                 <zplane rmin="assembly_cavity_radius" rmax="assembly_radius" z="start_cavity_z" />
+                 <zplane rmin="assembly_cavity_radius" rmax="assembly_radius" z="assembly_z" />
+         </polycone>
+ </solids>
+
+
+ <structure>
+	 <volume name="Assembly">
+		 <materialref ref="Al"/>
+		 <solidref ref="assembly"/>
+	 </volume>
+ </structure>
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Assembly"/>
+ </setup>
+
+</gdml>
+

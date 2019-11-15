@@ -8,11 +8,11 @@
 #/physics_engine/tailor/MuonNuclear on
 
 ##Geometry File to run simulation with
-/g4simple/setDetectorGDML PPCDetectorGeometry.gdml
+/g4simple/setDetectorGDML geometries/Plastic_Collimator.gdml
 
 ##Specify output file
 /g4simple/setOutputFormat root
-/analysis/setFileName out
+/analysis/setFileName out_source
 
 ##Set Volume ID's for Geometry Volumes
 /g4simple/setVolID detector_volume_PV 1

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_material SYSTEM "define_material.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+	 <!--	 &define_dimension;
+ 
+ &define_IC48A;
+ &define_IC48B;
+ &define_IC50B;
+ &define_IC74A;
+ -->
+
+  <quantity name="side_thickness" type="lenght" value="170" unit="mm" />
+  <quantity name="side_width" type="length" value="170" unit="mm"/>
+  <quantity name="side_height" type="length" value="460" unit="mm"/>
+  
+  <quantity name="back_thickness" type="length" value="170" unit="mm"/>
+  <quantity name="back_width" type="length" value="510" unit="mm"/>
+  <quantity name="back_height" type="length" value="460" unit="mm"/>
+  
+  <quantity name="front_thickness" type="length" value="120" unit="mm"/>
+  <quantity name="front_width" type="length" value="240" unit="mm"/>
+  <quantity name="front_height" type="length" value="580" unit="mm"/>
+
+  <quantity name="top_thickness" type="length" value="340" unit="mm"/>
+  <quantity name="top_width" type="length" value="510" unit="mm"/>
+  <quantity name="top_height" type="length" value="120" unit="mm"/>
+ 
+  <quantity name="pos_y_side" type="length" value="170" unit="mm" />
+  <quantity name="pos_x_back" type="length" value="170" unit="mm" />
+  <quantity name="pos_x_front" type="length" value="145" unit="mm" />
+  <quantity name="pos_z_front" type="length" value="60" unit="mm" />
+  <quantity name="pos_z_top" type="length" value="290" unit="mm" />
+  <quantity name="pos_x_top" type="length" value="85" unit="mm" />
+  
+  <position name="pos_left" x="0" y="-pos_y_side" z="0" />
+  <position name="pos_right" x="0" y="pos_y_side" z="0" />
+  <position name="pos_back" x="-pos_x_back" y="0" z="0"  />
+  <position name="pos_front" x="pos_x_front" y="0" z="-pos_z_front" />
+  <position name="pos_top" x="-pos_x_top" y="0" z="-pos_z_top" />
+
+
+
+   </define>
+
+
+
+
+ <materials>
+
+	 <!--	 &define_material;  -->
+
+	 <element Z="7" formula="N" name="Nitrogen" >
+                 <atom value="14.01" />
+         </element>
+         <element Z="8" formula="O" name="Oxygen" >
+                 <atom value="16" />
+         </element>
+
+         <material formula="air" name="Air" >
+                 <D value="0.0012899" />
+                 <fraction n="0.7" ref="Nitrogen" />
+                 <fraction n="0.3" ref="Oxygen" />
+         </material>
+
+         <material formula="vacuum" name="Vacuum" >
+                 <D value="6.24151e-07" unit="g/cm3"/>
+                 <composite n="2" ref="Nitrogen" />
+                 <composite n="2" ref="Oxygen" />
+         </material>
+
+
+      	 <material name="Pb" Z="82" >
+                 <D value="11.35" />
+                 <atom value="207.2" />
+         </material>
+
+	
+ </materials>
+
+
+
+
+ <solids>
+	 
+	 <box name="world_shield" lunit="m" x="1000.0" y="1000.0" z="1000.0"/>
+
+ 	 <box name="left" x="side_thickness" y="side_width" z="side_height"/>
+ 	 <box name="right" x="side_thickness" y="side_width" z="side_height"/>
+	 <box name="back" x="back_thickness" y="back_width" z="back_height"/>
+	 <box name="front" x="front_thickness" y="front_width" z="front_height"/>
+	 <box name="top" x="top_thickness" y="top_width" z="top_height"/>
+ 
+
+ </solids>
+
+
+
+
+<structure>
+
+	 <volume name="Left">
+		 <materialref ref="Pb"/>
+		 <solidref ref="left"/>
+	 </volume>
+	 <volume name="Right">
+		 <materialref ref="Pb"/>
+		 <solidref ref="right"/>
+	 </volume>
+	 <volume name="Back">
+		 <materialref ref="Pb"/>
+		 <solidref ref="back"/>
+	 </volume>
+	 <volume name="Front">
+		 <materialref ref="Pb"/>
+		 <solidref ref="front"/>
+	 </volume>
+	 <volume name="Top">
+		 <materialref ref="Pb"/>
+		 <solidref ref="top"/>
+	 </volume>
+
+
+	 <volume name="Shield">
+		 <materialref ref="Vacuum"/>
+		 <solidref ref="world_shield"/>
+		 <physvol>
+                         <volumeref ref="Left"/>
+                         <positionref ref="pos_left"/>
+                 </physvol>
+		 <physvol>
+                         <volumeref ref="Right"/>
+                         <positionref ref="pos_right"/>
+                 </physvol>
+		 <physvol>
+                         <volumeref ref="Back"/>
+                         <positionref ref="pos_back"/>
+                 </physvol>
+		 <physvol>
+                         <volumeref ref="Front"/>
+                         <positionref ref="pos_front"/>
+                 </physvol>
+		 <physvol>
+                         <volumeref ref="Top"/>
+                         <positionref ref="pos_top"/>
+                 </physvol>
+
+	 </volume>
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Shield"/>
+ </setup>
+
+</gdml>
+

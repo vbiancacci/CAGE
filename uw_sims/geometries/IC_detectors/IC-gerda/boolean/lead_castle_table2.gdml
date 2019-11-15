@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_lead_castle SYSTEM "define_lead_castle.xml">
+]>
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+
+	&define_lead_castle;
+
+  <quantity name="base_x_2" type="length" value="base_width_2" unit="mm" />
+  <quantity name="base_y_2" type="length" value="base_depth_2" unit="mm"/>
+  <quantity name="base_z_2" type="length" value="base_height_2" unit="mm"/>
+  
+  <quantity name="inner_cavity_x_2" type="length" value="inner_cavity_width_2" unit="mm"/>
+  <quantity name="inner_cavity_y_2" type="length" value="inner_cavity_depth_2" unit="mm"/>
+  <quantity name="inner_cavity_z_2" type="length" value="inner_cavity_height_2" unit="mm"/>
+  
+  <quantity name="top_x_2" type="length" value="top_width_2" unit="mm"/>
+  <quantity name="top_y_2" type="length" value="top_depth_2" unit="mm"/>
+  <quantity name="top_z_2" type="length" value="top_height_2" unit="mm"/>
+
+  <quantity name="copper_plate_z" type="length" value="copper_plate_height" unit="mm"/>
+  
+  <position name="center" x="0" y="0" z="0" />
+  <position name="pos_top" z="(base_z_2+top_z_2)/2+copper_plate_z" />
+
+   </define>
+
+
+
+
+ <materials>
+
+      	 <material name="Pb" Z="82" >
+                 <D value="11.35" />
+                 <atom value="207.2" />
+         </material>
+
+	
+ </materials>
+
+
+
+
+ <solids>
+ 	 <box name="base_lead_castle_2" x="base_x_2" y="base_y_2" z="base_z_2"/>
+	 <box name="inner_cavity_lead_castle_2" x="inner_cavity_x_2" y="inner_cavity_y_2" z="inner_cavity_z_2"/>
+	 <box name="top_lead_castle_2" x="top_x_2" y="top_y_2" z="top_z_2"/>
+	 
+	 <subtraction name="base_cavity_2" >
+		 <first ref="base_lead_castle_2"/> <second ref="inner_cavity_lead_castle_2"/>
+		 <positionref ref="center" />
+	 </subtraction>
+
+	 <union name="final_lead_castle_2" >
+		 <first ref="base_cavity_2"/> <second ref="top_lead_castle_2"/>
+		 <positionref ref="pos_top" />
+	 </union>
+
+
+
+ </solids>
+
+
+
+
+<structure>
+	 <volume name="Lead_castle">
+		 <materialref ref="G4_Pb"/>
+		 <solidref ref="final_lead_castle_2"/>
+	 </volume>
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Lead_castle"/>
+ </setup>
+
+</gdml>
+

@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
-##########################################
-
-#cylinder_1_height = outer can's height
-#cylinder_2_height = inner can's height
-#cylinder_outer_radius = outer can's radius radius
-#cylinder_inner_radius = inner can's radius
-
-##########################################
 
  <define>
 
@@ -26,13 +18,7 @@
 
  </define>
 
-##########################################
 
-# <materials>
-
-# </materials>
-
-##########################################
 
  <solids>
 
@@ -40,17 +26,15 @@
 
   <cone name="cylinder_2" rmin1="0" rmax1="cylinder_inner_radius" rmin2="0" rmax2="cylinder_inner_radius" z="cylinder_2_height" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-  <subtraction name="copper_can">
+ <subtraction name="copper_can">
     <first ref="cylinder_1" />
     <second ref="cylinder_2" />
-    <position x="0" y="0" z="0" />
+    <positionref ref="center" />
     <rotationref ref="identity" />
   </subtraction>
 
-
  </solids>
 
-##########################################
 
  <structure>
 
@@ -61,7 +45,6 @@
 
  </structure>
 
-##########################################
 
  <setup name="Default" version="1.0">
   <world ref="Copper_Can"/>

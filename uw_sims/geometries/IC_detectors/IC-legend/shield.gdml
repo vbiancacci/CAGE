@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+]>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+
+
+ &define_dimension;
+
+
+  <quantity name="shield_z" type="length" value="shield_height" unit="mm"/>
+  <quantity name="shield_radius" type="length" value="shield_width/2" unit="mm"/>
+  
+  <quantity name="shield_cavity_z" type="length" value="shield_cavity_height" unit="mm"/>
+  <quantity name="shield_cavity_radius" type="length" value="shield_cavity_width/2" unit="mm"/>
+  
+ 
+  <quantity name="start_cavity_z" type="length" value="position_shield_cavity_fromTop" unit="mm"/>
+  <quantity name="shield_cavity_radius" type="length" value="(shield_width-shield_thickness)/2" unit="mm"/>
+  
+  
+  
+  <!--
+  <position name="pos_shield_cavity" z="-(shield_z-shield_cavity_z)/2" /> 
+  <quantity name="assembly_z" type="length" value="assembly_height" unit="mm"/>
+  <quantity name="assembly_radius" type="length" value="assembly_width/2" unit="mm"/>
+-->
+
+
+
+ </define>
+
+
+
+
+ <materials>
+        <material name="Al" Z="13.0" >
+         <D value="2.70" unit="g/cm3" />
+         <atom value="26.98" />
+        </material>
+
+ </materials>
+
+
+
+
+
+ <solids>
+	 
+	 <polycone name="shield" startphi="0" deltaphi="TWOPI" aunit="rad">
+                 <zplane rmin="0" rmax="shield_radius" z="0" />
+                 <zplane rmin="0" rmax="shield_radius" z="start_cavity_z" />
+                 <zplane rmin="shield_cavity_radius" rmax="shield_radius" z="start_cavity_z" />
+                 <zplane rmin="shield_cavity_radius" rmax="shield_radius" z="shield_z" />
+         </polycone>
+
+	 <!--
+
+	 <tube name="shield" rmax="shield_radius"  z="shield_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 <tube name="shield_cavity" rmax="shield_cavity_radius" z="shield_cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	 
+	 <subtraction name="final_shield">
+		 <first ref="shield"/> <second ref="shield_cavity"/>
+		 <positionref ref="pos_shield_cavity"/>
+	 </subtraction> -->
+ </solids>
+
+
+
+
+
+
+ <structure>
+	 <volume name="Shield">
+		 <materialref ref="G4_Al"/>
+		 <solidref ref="shield"/>
+	 </volume>
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Shield"/>
+ </setup>
+
+</gdml>
+

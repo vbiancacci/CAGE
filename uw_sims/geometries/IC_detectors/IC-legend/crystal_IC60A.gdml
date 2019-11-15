@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_IC60A SYSTEM "define_IC60A.xml">
+]>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+	 &define_IC60A;
+
+
+  <quantity name="crystal_z" type="lenght" value="crystal_height" unit="mm" />
+  <quantity name="crystal_radius" type="length" value="bottom_width/2" unit="mm"/>
+
+  <quantity name="top_z" type="length" value="(crystal_height-bottom_height)" unit="mm"/>
+  <quantity name="top_radius" type="length" value="top_width/2" unit="mm"/>
+  <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
+  
+  <quantity name="cavity_z" type="length" value="cavity_height" unit="mm"/>
+
+  <quantity name="groove_z" type="length" value="groove_height" unit="mm"/>
+  <quantity name="groove_center_radius" type="length" value="groove_inner_width/2" unit="mm"/>
+  <quantity name="groove_radius" type="length" value="groove_outer_width/2" unit="mm"/>
+
+  <quantity name="start_groove_z" type="lenght" value="(crystal_height-groove_height)" unit="mm"  />
+
+  <position name="pos_groove_center"  z="(start_groove_z+groove_z/2)" />
+
+ 
+ </define>
+
+
+
+
+<materials>
+
+         <isotope name="Ge70" Z="32" N="70">
+                 <atom type="A" value="69.9243" />
+         </isotope>
+         <isotope name="Ge72" Z="32" N="72">
+                 <atom type="A" value="71.9221" />
+         </isotope>
+         <isotope name="Ge73" Z="32" N="73">
+                 <atom type="A" value="72.9235" />
+         </isotope>
+         <isotope name="Ge74" Z="32" N="74">
+                 <atom type="A" value="73.9212" />
+         </isotope>
+         <isotope name="Ge76" Z="32" N="76">
+                 <atom type="A" value="75.9214" />
+	 </isotope> 
+	 <element name="enr_ge" formula="Ge" >    <!--from MaGe    /1.00821    -->
+		<fraction n="0.0000397" ref="Ge70" />  
+		 <fraction n="0.0000893" ref="Ge72" />
+                 <fraction n="0.000278" ref="Ge73" />
+                 <fraction n="0.1258" ref="Ge74" />
+                 <fraction n="0.8738" ref="Ge76" /> 
+	 </element>
+         <material name="enriched_germanium" formula="Ge" >
+                 <D value="5.545" unit="g/cm3" />
+                 <fraction n="1.0" ref="enr_ge" />
+	 </material>
+	
+	 
+	<!--
+	 <isotope name="Ge76" Z="32" N="76">   
+	 </isotope>
+	 <isotope name="Ge36" Z="32" N="36">
+	 </isotope>
+	 
+	 <material name="enriched_germanium" >
+		 <D value="5.323" unit="mg/cm3"/>
+		 <fraction ref="Ge76" n="0.9" />
+		 <fraction ref="Ge36" n="0.1" />
+	 </material> -->
+ </materials>
+
+
+
+
+
+ <solids>
+
+      	<polycone name="crystal" startphi="0" deltaphi="TWOPI" aunit="rad">
+                 <zplane rmin="top_inner_radius" rmax="top_radius" z="0" />
+                 <zplane rmin="top_inner_radius" rmax="crystal_radius" z="top_z" />
+                 <zplane rmin="top_inner_radius" rmax="crystal_radius" z="cavity_z" />
+                 <zplane rmin="0" rmax="crystal_radius" z="cavity_z" />
+                 <zplane rmin="0" rmax="crystal_radius" z="start_groove_z" />
+                 <zplane rmin="groove_radius" rmax="crystal_radius" z="start_groove_z" />
+                 <zplane rmin="groove_radius" rmax="crystal_radius" z="crystal_z" />
+      	</polycone>
+
+     	<tube name="groove_center" rmax="groove_center_radius"  z="groove_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+	<union name="final_crystal">
+                 <first ref="crystal"/> <second ref="groove_center"/>
+                 <positionref ref="pos_groove_center"/>
+        </union>
+
+
+ </solids>
+
+
+
+
+
+ <structure>
+	 <volume name="Crystal">
+		 <materialref ref="enriched_germanium"/>
+		 <solidref ref="final_crystal"/>
+	 </volume>
+ </structure>
+
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Crystal"/>
+ </setup>
+
+</gdml>
+

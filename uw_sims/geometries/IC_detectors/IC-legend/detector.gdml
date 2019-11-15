@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_source SYSTEM "define_source.xml">
+<!ENTITY define_lead_castle SYSTEM "define_lead_castle.xml">
+]>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+ <define>
+	
+	 &define_dimension;
+
+	 &define_source;
+
+	 &define_lead_castle;
+
+ <!-- CHOOSE THE DETECTOR IN VACUUM CAVITY -->
+
+
+ <!-- when positioning a volume associated to a Boolean solid, the relative center of coordinates considered for the positioning is the one related to the first of the two constituent solids -->
+
+
+  <quantity name="source_z" type="length" value="source_height" unit="mm"/>
+  <quantity name="source_radius" type="length" value="source_width/2" unit="mm"/>
+
+  <quantity name="shield_z" type="length" value="shield_height" unit="mm"/>
+  <quantity name="shield_cavity_z" type="length" value="shield_cavity_height" unit="mm"/>
+
+  <quantity name="pos_source_fromShield" type="length" value="position_source_fromShield" unit="cm"/>
+  <quantity name="pos_crystal_fromTop" type="length" value="position_crystal_fromTop" unit="mm"/> 
+  <quantity name="pos_holder_fromTop" type="length" value="position_holder_fromTop" unit="mm"/> 
+
+  <position name="pos_source"  z="-pos_source_fromShield" />
+  <position name="pos_crystal" z="pos_crystal_fromTop" />
+  <position name="pos_holder" z="pos_holder_fromTop"  />
+
+  <quantity name="pos_shield" value="position_shield_fromBottom" type="length"  unit="mm" /> 
+
+
+
+  <quantity name="bottom_plate_z" type="length" value="bottom_plate_height" unit="mm"/>
+  <position name="pos_bottom_plate_table" z="pos_shield-(bottom_plate_z)/2" />
+  
+  <quantity name="lead_castle_table1_z" type="length" value="base_height_1" unit="mm"/>
+  <position name="pos_lead_castle_table1" z="pos_shield-(lead_castle_table1_z)/2" />
+  
+  <quantity name="lead_castle_table2_z" type="length" value="base_height_2" unit="mm"/>
+  <position name="pos_lead_castle_table2" z="pos_shield-(lead_castle_table2_z)/2" />
+  
+  <quantity name="copper_plate_z" type="length" value="copper_plate_height" unit="mm"/>
+  <position name="pos_copper_plate" z="-(lead_castle_table2_z-pos_shield+copper_plate_z/2)" />
+
+  <quantity name="vacuum_cavity_z" type="length" value="(shield_height-position_shield_cavity_fromTop)" unit="mm"/>
+  <quantity name="vacuum_cavity_radius" type="length" value="(shield_width-shield_thickness)/2" unit="mm"/>
+  
+  <quantity name="pos_shield_cavity_fromTop" tupe="length" value="position_shield_cavity_fromTop" unit="mm" />
+  <position name="pos_vacuum_cavity" z="(pos_shield_cavity_fromTop)/2"/>
+
+
+
+ </define>
+
+
+
+
+ <materials>
+     <element Z="7" formula="N" name="Nitrogen" >
+                 <atom value="14.01" />
+         </element>
+         <element Z="8" formula="O" name="Oxygen" >
+                 <atom value="16" />
+         </element>
+	 
+	 <material formula="air" name="Air" >
+                 <D value="1.290" unit="g/cm3"/>  <!-- 1.0e-25 -->
+                 <fraction n="0.7" ref="Nitrogen" />
+                 <fraction n="0.3" ref="Oxygen" />
+         </material>
+
+         <material formula="vacuum" name="Vacuum" >
+                 <D value="6.24151e-07" unit="g/cm3"/>  <!-- 1.0e-25 -->
+                 <composite n="2" ref="Nitrogen" />
+                 <composite n="2" ref="Oxygen" />
+         </material>
+      <material name="Al" Z="13.0" >
+                 <D value="2.70" unit="g/cm3" />
+                 <atom value="26.98" />
+	 </material>
+	 <material name="Pb" Z="82" >
+                 <D value="11.35" unit="g/cm3" />
+                 <atom value="207.2" />
+         </material>
+
+ </materials>
+
+
+
+
+
+
+ <solids>
+	 <box name="worldBox" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
+
+<!-- source -->
+         <tube name="source" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+         <tube name="vacuum_cavity" rmax="vacuum_cavity_radius" z="vacuum_cavity_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+
+
+
+ </solids>
+
+
+
+
+
+ <structure>
+	 <volume name="Source">
+                 <materialref ref="G4_Cu"/>
+                 <solidref ref="source"/>
+         </volume>
+
+        <volume name="Vacuum_cavity">
+                 <materialref ref="G4_Galactic"/>
+                 <solidref ref="vacuum_cavity"/>
+		 
+		 <physvol>
+                         <file name="crystal_60A.gdml"/>
+                         <positionref ref="pos_crystal"/>
+		 </physvol> <!--
+		 <physvol>
+                         <file name="crystal_60B.gdml"/>
+                         <positionref ref="pos_crystal"/>
+		 </physvol>
+		 <physvol>
+                         <file name="crystal_62B.gdml"/>
+                         <positionref ref="pos_crystal"/>
+		 </physvol> 
+		 <physvol>
+                         <file name="crystal_66B.gdml"/>
+                         <positionref ref="pos_crystal"/>
+		 </physvol> --> 
+                 <physvol>
+                         <file name="holder.gdml"/>
+                         <positionref ref="pos_holder"/>
+                 </physvol>
+	 </volume>
+
+
+
+	     <volume name="World">
+                 <materialref ref="G4_AIR"/>
+                 <solidref ref="worldBox"/>
+		 <physvol>
+                         <file name="bottom_plate.gdml"/>
+			 <positionref ref="pos_bottom_plate_table"/>
+		 </physvol>
+		
+		 <physvol>
+                         <file name="lead_castle_table1.gdml"/>
+			 <positionref ref="pos_lead_castle_table1"/>
+		 </physvol>
+		 <!--
+		 <physvol> 
+		 <file name="lead_castle_table2.gdml"/>
+			 <positionref ref="pos_lead_castle_table2"/>
+		 </physvol>
+		 <physvol>
+                         <file name="copper_plate_table2.gdml"/>
+			 <positionref ref="pos_copper_plate"/>
+		 </physvol>-->
+		 <physvol> 
+                         <volumeref ref="Source"/>
+                         <positionref ref="pos_source"/>
+		 </physvol>
+		  <physvol>
+			 <file name="shield.gdml"/>
+			 <positionref ref="center"/>
+		 </physvol> 
+		 <physvol> 
+                         <volumeref ref="Vacuum_cavity"/>
+                         <positionref ref="pos_vacuum_cavity"/>
+		 </physvol>
+	 </volume>
+
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="World"/>
+ </setup>
+</gdml>
+

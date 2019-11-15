@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_material SYSTEM "define_material.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+
+ <define>
+	 &define_dimension;
+ <!--
+ &define_IC48A;
+ &define_IC48B;
+ &define_IC50B;
+ &define_IC74A;
+ -->
+
+  <quantity name="crystal_z" type="lenght" value="crystal_height" unit="mm" />
+  <quantity name="crystal_radius" type="length" value="crystal_width/2" unit="mm"/>
+  
+  <quantity name="top_z" type="length" value="top_height" unit="mm"/>
+  <quantity name="top_radius" type="length" value="top_width/2" unit="mm"/>
+  <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
+  
+  <quantity name="groove_z" type="length" value="groove_height" unit="mm"/>
+  <quantity name="groove_center_radius" type="length" value="groove_inner_width/2" unit="mm"/>
+  <quantity name="groove_radius" type="length" value="groove_outer_width/2" unit="mm"/>
+
+  <quantity name="start_groove_z" type="lenght" value="(crystal_height-groove_height)" unit="mm"  />
+ 
+  <position name="pos_groove"  z="(start_groove_z+groove_z/2)" />
+ </define>
+
+
+
+
+ <materials>
+
+	 <!--	 &define_material;  -->
+
+
+	 <isotope name="Ge76" Z="32" N="76"> 
+	 </isotope>
+	 <isotope name="Ge36" Z="32" N="36">
+	 </isotope>
+	 
+	 <material name="enriched_germanium" >
+		 <D value="5.323" unit="mg/cm3"/>
+		 <fraction ref="Ge76" n="0.9" />
+		 <fraction ref="Ge36" n="0.1" />
+	 </material>
+	
+
+ </materials>
+
+
+
+
+ <solids>
+ <box name="world_crystal" lunit="mm" x="1000.0" y="1000.0" z="1000.0"/>
+
+	 <polycone name="crystal" startphi="0" deltaphi="TWOPI" aunit="rad">
+                 <zplane rmin="top_inner_radius" rmax="top_radius" z="0" />
+                 <zplane rmin="top_inner_radius" rmax="crystal_radius" z="top_z" />
+                 <zplane rmin="0" rmax="crystal_radius" z="top_z" />
+                 <zplane rmin="0" rmax="crystal_radius" z="start_groove_z" />
+                 <zplane rmin="groove_radius" rmax="crystal_radius" z="start_groove_z" />
+                 <zplane rmin="groove_radius" rmax="crystal_radius" z="crystal_z" />
+         </polycone>
+
+	 <tube name="groove_center" rmax="groove_center_radius"  z="groove_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+ 
+
+ </solids>
+
+
+
+
+<structure>
+
+	 <volume name="Groove">
+		 <materialref ref="enriched_germanium"/>
+		 <solidref ref="groove_center"/>
+	 </volume>
+
+	 <volume name="Base">
+		 <materialref ref="enriched_germanium"/>
+		 <solidref ref="crystal"/>
+	 </volume>
+		
+	 <volume name="Crystal">
+		 <materialref ref="Vacuum"/>
+		 <solidref ref="world_crystal"/>
+		 <physvol>
+                         <volumeref ref="Base"/>
+                         <positionref ref="center"/>
+                 </physvol>
+		 <physvol>
+                         <volumeref ref="Groove"/>
+                         <positionref ref="pos_groove"/>
+                 </physvol>
+
+	 </volume>
+ </structure>
+
+
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Base"/>
+ </setup>
+
+</gdml>
+

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE gdml [
+<!ENTITY define_dimension SYSTEM "define_dimension.xml">
+<!ENTITY define_material SYSTEM "define_material.xml">
+]>
+<!--
+<!ENTITY define_IC48B SYSTEM "define_IC48B.xml">
+<!ENTITY define_IC50A SYSTEM "define_IC50A.xml">
+<!ENTITY define_IC50B SYSTEM "define_IC50B.xml">
+<!ENTITY define_IC74A SYSTEM "define_IC74A.xml">
+-->
+
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+	
+
+ <define>
+	
+	 &define_dimension;
+  <!--
+  &define_IC48A;
+  &define_IC48A;
+  &define_IC48A;
+  -->
+
+  <quantity name="holder_radius" type="lenght"  value="holder_width/2" unit="mm"/>
+  <quantity name="holder_z" type="lenght"  value="holder_height" unit="mm"/>
+    
+  <quantity name="cylinder_z" type="length" value="cylinder_outer_height" unit="mm"/>
+  <quantity name="cylinder_radius" type="length" value="cylinder_outer_width/2" unit="mm"/>
+  
+  <quantity name="bottom_cylinder_radius" type="length" value="bottom_cylinder_width/2" unit="mm"/>
+  
+  <quantity name="cavity_z" type="length" value="cylinder_inner_height" unit="mm"/>
+  <quantity name="cavity_radius" type="length" value="cylinder_inner_width/2" unit="mm"/>
+  
+  <quantity name="bottom_cavity_z" type="length" value="bottom_cavity_height" unit="mm"/>
+  <quantity name="bottom_cavity_radius" type="length" value="bottom_cavity_width/2" unit="mm"/>
+  
+  <quantity name="ring_z" type="length" value="ring_height" unit="mm"/>
+
+  <quantity name="edge_z" type="length" value="edge_height" unit="mm"/>
+  
+  <quantity name="pos_bottom_ring_fromTop" type="lenght"  value="position_bottom_ring_fromTop" unit="mm"/>
+  <quantity name="pos_top_ring_fromTop" type="lenght"  value="position_top_ring_fromTop" unit="mm"/>
+  
+  <quantity name="end_top_ring_z" type="lenght" value="(position_top_ring_fromTop+ring_height)"  unit="mm"/>
+  <quantity name="end_bottom_ring_z" type="lenght" value="(position_bottom_ring_fromTop+ring_height)"  unit="mm"/>
+  <quantity name="end_bottom_cavity_z" type="lenght" value="(cylinder_inner_height+bottom_cavity_height)" unit="mm" />
+
+ </define>
+
+
+
+ <materials>
+		
+	 <!--	 &define_material;   -->
+
+	<material name="Al" Z="13.0" >
+		<D value="2.70" unit="g/cm3" />
+		<atom value="26.98" />
+	</material> 
+
+ </materials>
+
+
+ <solids>
+
+<polycone name="holder" startphi="0" deltaphi="TWOPI" aunit="rad">
+		 <zplane rmin="cavity_radius" rmax="holder_radius" z="0" />
+		 <zplane rmin="cavity_radius" rmax="holder_radius" z="edge_z" /> 
+		 <zplane rmin="cavity_radius" rmax="cylinder_radius" z="edge_z" />
+		 <zplane rmin="cavity_radius" rmax="cylinder_radius" z="pos_top_ring_fromTop" /> 
+		 <zplane rmin="cavity_radius" rmax="holder_radius" z="pos_top_ring_fromTop" />
+		 <zplane rmin="cavity_radius" rmax="holder_radius" z="end_top_ring_z" />  
+		 <zplane rmin="cavity_radius" rmax="cylinder_radius" z=" end_top_ring_z" />  
+		 <zplane rmin="cavity_radius" rmax="cylinder_radius" z="pos_bottom_ring_fromTop" />
+		 <zplane rmin="cavity_radius" rmax="holder_radius" z="pos_bottom_ring_fromTop" />  
+		 <zplane rmin="cavity_radius" rmax="holder_radius" z="end_bottom_ring_z" />   
+		 <zplane rmin="cavity_radius" rmax="cylinder_radius" z="end_bottom_ring_z" />   
+		 <zplane rmin="cavity_radius" rmax="cylinder_radius" z="cavity_z" />   
+		 <zplane rmin="bottom_cavity_radius" rmax="cylinder_radius" z="cavity_z" />  
+		 <zplane rmin="bottom_cavity_radius" rmax="cylinder_radius" z="cylinder_z" />   
+		 <zplane rmin="bottom_cavity_radius" rmax="bottom_cylinder_radius" z="cylinder_z" /> 
+		 <zplane rmin="bottom_cavity_radius" rmax="bottom_cylinder_radius" z="end_bottom_cavity_z" />  
+		 <zplane rmin="0" rmax="bottom_cylinder_radius" z="end_bottom_cavity_z" />  
+		 <zplane rmin="0" rmax="bottom_cylinder_radius" z="holder_z" />   
+	 </polycone>
+ </solids>
+
+
+ <structure>
+	 <volume name="Holder">
+		 <materialref ref="Al"/>
+		 <solidref ref="holder"/>
+	 </volume>
+ </structure>
+
+
+ <setup name="Default" version="1.0">
+	 <world ref="Holder"/>
+ </setup>
+
+</gdml>
+
