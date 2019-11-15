@@ -24,6 +24,26 @@
   <constant name="groove_inner_width"   value="22.6" />
   <constant name="groove_outer_width"   value="31.0" />
 
+  <constant name="cut_crystal_x"   value="5.0" />
+  <constant name="cut_crystal_y"   value="38.7" />
+  <constant name="cut_crystal_z"   value="8.0" />
+  
+  <constant name="cut_width"   value="80" />
+  <constant name="cut_depth"   value="80" />
+  <constant name="cut_height"   value="80" />
+
+
+
+  <constant name="m" value="tan(cut_crystal_x/cut_crystal_z)" />
+  <constant name="q" value="(crystal_height-m*bottom_width/2)" />
+
+  <constant name="cos" value="cos(atan(m))" />
+  <constant name="position_cut_x" value="2*(bottom_width/2+(cut_width-cut_crystal_x*cos)*cos)" />
+  <constant name="position_cut_z" value="(m*position_cut_x+q)" />
+
+
+
+
 
 
 

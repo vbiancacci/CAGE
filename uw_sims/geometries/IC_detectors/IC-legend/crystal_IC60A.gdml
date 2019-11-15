@@ -10,21 +10,43 @@
 
 
   <quantity name="crystal_z" type="lenght" value="crystal_height" unit="mm" />
-  <quantity name="crystal_radius" type="length" value="bottom_width/2" unit="mm"/>
+  <quantity name="crystal_radius" type="lenght" value="bottom_width/2" unit="mm"/>
 
-  <quantity name="top_z" type="length" value="(crystal_height-bottom_height)" unit="mm"/>
-  <quantity name="top_radius" type="length" value="top_width/2" unit="mm"/>
-  <quantity name="top_inner_radius" type="length" value="cavity_width/2" unit="mm"/>
+  <quantity name="top_z" type="lenght" value="(crystal_height-bottom_height)" unit="mm"/>
+  <quantity name="top_radius" type="lenght" value="top_width/2" unit="mm"/>
+  <quantity name="top_inner_radius" type="lenght" value="cavity_width/2" unit="mm"/>
   
-  <quantity name="cavity_z" type="length" value="cavity_height" unit="mm"/>
+  <quantity name="cavity_z" type="lenght" value="cavity_height" unit="mm"/>
 
-  <quantity name="groove_z" type="length" value="groove_height" unit="mm"/>
-  <quantity name="groove_center_radius" type="length" value="groove_inner_width/2" unit="mm"/>
+  <quantity name="groove_z" type="lenght" value="groove_height" unit="mm"/>
+  <quantity name="groove_center_radius" type="lenght" value="groove_inner_width/2" unit="mm"/>
   <quantity name="groove_radius" type="length" value="groove_outer_width/2" unit="mm"/>
 
   <quantity name="start_groove_z" type="lenght" value="(crystal_height-groove_height)" unit="mm"  />
 
   <position name="pos_groove_center"  z="(start_groove_z+groove_z/2)" />
+
+
+<!-- cut -->
+
+  <quantity name="cut_x" type="lenght" value="cut_width" unit="mm"/>
+  <quantity name="cut_y" type="lenght" value="cut_depth" unit="mm"/>
+  <quantity name="cut_z" type="lenght" value="cut_height" unit="mm"/>
+
+
+  <constant name="m_value" value="(cut_crystal_x/cut_crystal_z)" />
+  <constant name="q_value"  value="(crystal_height-m_value*bottom_width/2)"  />
+
+  <constant name="costheta" value="cos(atan(m_value))"  />
+  
+  <variable name="position_cut_x"  value="(bottom_width/2+(cut_width/2-cut_crystal_x*costheta)*costheta)" />
+  <variable name="position_cut_z"  value="(m_value*position_cut_x+q_value)" /> 
+ 
+  <quantity name="pos_cut_x" type="lenght" value="position_cut_x" unit="mm" />
+  <quantity name="pos_cut_z" type="lenght" value="position_cut_z" unit="mm" />
+
+  <position name="pos_cut" x="pos_cut_x" z="pos_cut_z" unit="mm"/>
+  <rotation name="rot_cut"  y="-atan(m_value)" aunit="deg" />  
 
  
  </define>
@@ -81,7 +103,11 @@
 
  <solids>
 
-      	<polycone name="crystal" startphi="0" deltaphi="TWOPI" aunit="rad">
+     	<tube name="groove_center" rmax="groove_center_radius"  z="groove_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	
+	<box name="cut" x="cut_x" y="cut_y" z="cut_z" />
+	
+	<polycone name="crystal" startphi="0" deltaphi="TWOPI" aunit="rad">
                  <zplane rmin="top_inner_radius" rmax="top_radius" z="0" />
                  <zplane rmin="top_inner_radius" rmax="crystal_radius" z="top_z" />
                  <zplane rmin="top_inner_radius" rmax="crystal_radius" z="cavity_z" />
@@ -91,13 +117,17 @@
                  <zplane rmin="groove_radius" rmax="crystal_radius" z="crystal_z" />
       	</polycone>
 
-     	<tube name="groove_center" rmax="groove_center_radius"  z="groove_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
 
-	<union name="final_crystal">
+	<union name="groove_crystal">
                  <first ref="crystal"/> <second ref="groove_center"/>
                  <positionref ref="pos_groove_center"/>
         </union>
 
+	<subtraction name="final_crystal">
+                 <first ref="groove_crystal"/> <second ref="cut"/>
+                 <positionref ref="pos_cut"/>
+                 <rotationref ref="rot_cut"/>
+        </subtraction>
 
  </solids>
 
